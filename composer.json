@@ -1,0 +1,17 @@
+{
+  "name": "reinder83/binary-flags",
+  "description": "Useful class for binary operations",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Reinder Reinders",
+      "email": "reinder.reinders@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Reinder83\\BinaryFlags\\": "src/"
+    }
+  }
+}
