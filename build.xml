@@ -24,6 +24,10 @@
             depends="prepare,composer,static-analysis-parallel,phpunit,phpdox,-check-failure"
             description="Performs static analysis (executing the tools in parallel), runs the tests, and generates project documentation"/>
 
+    <target name="travis"
+            depends="prepare,lint,phpunit-travis"
+            description="Build specific for Travis CI" />
+
     <target name="quick-build"
             depends="prepare,composer,lint,phpunit-no-coverage"
             description="Performs a lint check and runs the tests (without generating code coverage reports)"/>
@@ -229,6 +233,18 @@
         </exec>
 
         <property name="phpcpd.done" value="true"/>
+    </target>
+
+    <target name="phpunit-travis"
+            unless="phpunit.done"
+            depends="prepare"
+            description="Run unit tests with PHPUnit">
+        <exec executable="phpunit" resultproperty="result.phpunit" taskname="phpunit">
+            <arg value="--configuration"/>
+            <arg path="${basedir}/build/phpunit.xml"/>
+        </exec>
+
+        <property name="phpunit.done" value="true"/>
     </target>
 
     <target name="phpunit"
