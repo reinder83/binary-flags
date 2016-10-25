@@ -87,25 +87,29 @@ abstract class BinaryFlags
      * and return the names or descriptions in a comma separated string or as array
      *
      * @param int [$mask]
-     * @param bool [$as_array]
+     * @param bool [$asArray]
      * @return string|array
      */
-    public function getFlagNames($mask = null, $as_array = false)
+    public function getFlagNames($mask = null, $asArray = false)
     {
         $mask = $mask ?: $this->mask;
 
         $calledClass = get_called_class();
 
-        $rc = new ReflectionClass($calledClass);
-        $constants = $rc->getConstants();
+        $reflection = new ReflectionClass($calledClass);
+        $constants = $reflection->getConstants();
 
         $names = array();
-        if ($constants) foreach ($constants as $constant => $flag) if ($mask & $flag) {
-            $names[] = method_exists($calledClass, 'getAllFlags') && $calledClass::getAllFlags()[$flag]
-                ? $calledClass::getAllFlags()[$flag]
-                : implode('', array_map('ucfirst', explode('_', strtolower($constant))));
+        if ($constants) {
+            foreach ($constants as $constant => $flag) {
+                if ($mask & $flag) {
+                    $names[] = method_exists($calledClass, 'getAllFlags') && !empty($calledClass::getAllFlags()[$flag])
+                    ? $calledClass::getAllFlags()[$flag]
+                    : implode('', array_map('ucfirst', explode('_', strtolower($constant))));
+                }
+            }
         }
-        return $as_array ? $names : implode(', ', $names);
+        return $asArray ? $names : implode(', ', $names);
     }
 
     /**
@@ -169,12 +173,12 @@ abstract class BinaryFlags
      * When you want to match any of the given flags set $check_all to false
      *
      * @param int $flag
-     * @param bool $check_all
+     * @param bool $checkAll
      * @return bool
      */
-    public function checkFlag($flag, $check_all = true)
+    public function checkFlag($flag, $checkAll = true)
     {
         $result = $this->mask & $flag;
-        return $check_all ? $result == $flag : $result > 0;
+        return $checkAll ? $result == $flag : $result > 0;
     }
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="Custom Standard">
+
+    <!--
+       The name attribute of the ruleset tag is displayed
+       when running PHP_CodeSniffer with the -v command line
+       argument. The description tag below is not displayed anywhere
+       except in this file, so it can contain information for
+       developers who may change this file in the future.
+    -->
+    <description>Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.</description>
+
+    <!--
+       You can hard-code ignore patterns directly into your
+       custom standard so you don't have to specify the
+       patterns on the command line.
+
+       The following two tags are equivalent to the command line
+       argument: - -ignore=*/tests/*,*/data/*
+    -->
+    <exclude-pattern>autoload.php</exclude-pattern>
+    <exclude-pattern>*/tests/bootstrap.php</exclude-pattern>
+
+    <!--
+       Include all sniffs in the PSR2 standard.
+    -->
+    <rule ref="PSR2"/>
+
+    <!--
+        Check php extension
+    -->
+    <arg name="extensions" value="php" />
+
+</ruleset>
