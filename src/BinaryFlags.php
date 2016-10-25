@@ -83,11 +83,32 @@ abstract class BinaryFlags
     protected $mask;
 
     /**
+     * This will be called on changes
+     * @var callable
+     */
+    protected $onModifyCallback;
+
+    /**
+     * Initiate class
+     * @param int [$mask]
+     * @param callable [$onModify]
+     */
+    public function __construct($mask = 0, callable $onModify = null)
+    {
+        $this->setMask($mask);
+
+        // set onModify callback if specified
+        if ($onModify !== null) {
+            $this->setOnModifyCallback($onModify);
+        }
+    }
+
+    /**
      * Check mask against constants
      * and return the names or descriptions in a comma separated string or as array
      *
-     * @param int [$mask]
-     * @param bool [$asArray]
+     * @param int [$mask = 0]
+     * @param bool [$asArray = false]
      * @return string|array
      */
     public function getFlagNames($mask = null, $asArray = false)
@@ -104,8 +125,8 @@ abstract class BinaryFlags
             foreach ($constants as $constant => $flag) {
                 if ($mask & $flag) {
                     $names[] = method_exists($calledClass, 'getAllFlags') && !empty($calledClass::getAllFlags()[$flag])
-                    ? $calledClass::getAllFlags()[$flag]
-                    : implode('', array_map('ucfirst', explode('_', strtolower($constant))));
+                        ? $calledClass::getAllFlags()[$flag]
+                        : implode('', array_map('ucfirst', explode('_', strtolower($constant))));
                 }
             }
         }
@@ -113,23 +134,40 @@ abstract class BinaryFlags
     }
 
     /**
-     * Initiate class
-     * @param int $mask
+     * Set an function which will be called upon changes
+     *
+     * @param callable $onModify
      */
-    public function __construct($mask = 0)
+    public function setOnModifyCallback(callable $onModify)
     {
-        $this->setMask($mask);
+        $this->onModifyCallback = $onModify;
+    }
+
+    /**
+     * Will be called upon changes and execute the callback, if set
+     */
+    protected function onModify()
+    {
+        if (is_callable($this->onModifyCallback)) {
+            call_user_func($this->onModifyCallback, $this);
+        }
     }
 
     /**
      * This method will set the mask where will be checked against
      *
-     * @param number $mask
+     * @param int $mask
      * @return BinaryFlags
      */
     public function setMask($mask)
     {
+        $before = $this->mask;
         $this->mask = $mask;
+
+        if ($before !== $this->mask) {
+            $this->onModify();
+        }
+
         return $this;
     }
 
@@ -151,7 +189,12 @@ abstract class BinaryFlags
      */
     public function addFlag($flag)
     {
+        $before = $this->mask;
         $this->mask |= $flag;
+
+        if ($before !== $this->mask) {
+            $this->onModify();
+        }
         return $this;
     }
 
@@ -163,7 +206,12 @@ abstract class BinaryFlags
      */
     public function removeFlag($flag)
     {
+        $before = $this->mask;
         $this->mask &= ~$flag;
+
+        if ($before !== $this->mask) {
+            $this->onModify();
+        }
         return $this;
     }
 
