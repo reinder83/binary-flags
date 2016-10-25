@@ -90,8 +90,8 @@ abstract class BinaryFlags
 
     /**
      * Initiate class
-     * @param int [$mask]
-     * @param callable [$onModify]
+     * @param int [$mask = 0]
+     * @param callable [$onModify = null]
      */
     public function __construct($mask = 0, callable $onModify = null)
     {
@@ -107,7 +107,7 @@ abstract class BinaryFlags
      * Check mask against constants
      * and return the names or descriptions in a comma separated string or as array
      *
-     * @param int [$mask = 0]
+     * @param int [$mask = null]
      * @param bool [$asArray = false]
      * @return string|array
      */
