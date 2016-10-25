@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/reinder83/binary-flags.svg?branch=master)](https://travis-ci.org/reinder83/binary-flags)
+
 # BinaryFlags
 With this class you can easily add flags to your models.
   
