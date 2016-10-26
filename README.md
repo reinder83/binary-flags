@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/reinder83/binary-flags.svg?branch=master)](https://travis-ci.org/reinder83/binary-flags)
+[![Coverage Status](https://coveralls.io/repos/github/reinder83/binary-flags/badge.svg?branch=master)](https://coveralls.io/github/reinder83/binary-flags?branch=master)
 
 # BinaryFlags
 With this class you can easily add flags to your models.
