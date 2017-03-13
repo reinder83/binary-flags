@@ -1,10 +1,12 @@
 <?php
 
 /**
- * Create a test class which extends from our abstract class
+ * Create a test classes which extends from our abstract class
  */
 
 namespace Reinder83\BinaryFlags\Tests {
+
+    require __DIR__ .'/../vendor/autoload.php';
 
     use Reinder83\BinaryFlags\BinaryFlags;
 
@@ -42,5 +44,4 @@ namespace Reinder83\BinaryFlags\Tests {
         }
 
     }
-
 }

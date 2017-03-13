@@ -7,3 +7,4 @@
 /build/pdepend/
 /build/coverage/
 /cache.properties
+composer.lock
