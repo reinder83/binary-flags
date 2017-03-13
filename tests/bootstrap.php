@@ -6,6 +6,8 @@
 
 namespace Reinder83\BinaryFlags\Tests {
 
+    require __DIR__ .'/../vendor/autoload.php';
+
     use Reinder83\BinaryFlags\BinaryFlags;
 
     /**
@@ -42,5 +44,4 @@ namespace Reinder83\BinaryFlags\Tests {
         }
 
     }
-
 }
