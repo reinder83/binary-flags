@@ -9,6 +9,12 @@ To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGI
 
 This package also comes with a trait which use can use to implement binary flags directly in your own class.
 
+## Installing
+To install this package simply run the following command on the root of your project.
+```
+composer require reinder83\binary-flags
+```
+
 ## Methods
 The following methods can be used:
 
@@ -189,3 +195,6 @@ $test = Test::find(1);
 // do binary operations on the flags class as described earlier
 $test->flags->checkFlag(ExampleFlag::FOO);
 ```
+
+## Support
+For bugs or feature requests feel free to contact me or submit an issue or pull request. 
