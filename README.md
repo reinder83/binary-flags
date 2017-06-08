@@ -8,7 +8,6 @@ The number of flags you can use is limited to the architecture of your system, e
 To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalant in your datastorage.
 
 ## Methods
-
 The following methods can be used:
 
 ##### setMask(int $mask)
@@ -95,8 +94,8 @@ var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAZ, true)
 // true because one of the flags is set (FOO)
 ```
 
-##### Get flag names example
-By default the name are based on the constant name
+##### Flag names example
+_By default the flag names are based on the constant names_
 ```php
 $exampleFlags = new ExampleFlags();
 
@@ -119,7 +118,7 @@ var_export($exampleFlags->getFlagNames(ExampleFlags::FOO | ExampleFlags::BAR));
 // 'Foo, Bar'
 ```
 
-##### Get flag with custom names example
+##### Custom flag names example
 If you want custom flag names that are not equal to the constant names, you can override these with `getAllFlags()`
 
 ```php
