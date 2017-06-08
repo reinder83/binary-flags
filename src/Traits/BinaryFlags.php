@@ -138,7 +138,7 @@ trait BinaryFlags
     /**
      * Check if given flag(s) are set in the current mask
      * By default it will check all bits in the given flag
-     * When you want to match any of the given flags set $check_all to false
+     * When you want to match any of the given flags set $checkAll to false
      *
      * @param int $flag
      * @param bool $checkAll
