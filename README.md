@@ -154,7 +154,7 @@ array (
 */
 ```
 
-##### Example usage with Eloqent models
+##### Example usage with Eloquent models
 
 ```php
 use Illuminate\Database\Eloquent\Model;
