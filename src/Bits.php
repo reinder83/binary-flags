@@ -3,7 +3,7 @@
 namespace Reinder83\BinaryFlags;
 
 /**
- * This class holds all possible values you can use in you binary flags
+ * This class holds all possible values you can use in your binary flags
  * @package Reinder83\BinaryFlags
  */
 class Bits
