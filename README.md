@@ -10,7 +10,7 @@ To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGI
 This package also comes with a trait which use can use to implement binary flags directly in your own class.
 
 ## Installing
-To install this package simply run the following command on the root of your project.
+To install this package simply run the following command in the root of your project.
 ```
 composer require reinder83\binary-flags
 ```
@@ -29,10 +29,10 @@ Retrieve the current mask.
 Set a callback function which is called when the mask changes. 
 This can be passed as second argument in the contructor.
 
-##### getFlagNames([int $mask, [bool $asArray]])
-Give the name(s) for the given `$mask` or the current `$mask` when omitted.
+##### getFlagNames([int $mask, [bool $asArray=false]])
+Give the name(s) for the given `$mask` or the current mask when omitted.
 When `$asArray` is `true` the method will return an array with the names, 
-otherwise an comma separated string will be returned.
+otherwise an comma separated string will be returned (default).
 
 ##### addFlag(int $flag)
 Adds one or multiple flags the to current mask.
