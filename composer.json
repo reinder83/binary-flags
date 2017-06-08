@@ -1,7 +1,7 @@
 {
   "name": "reinder83/binary-flags",
   "description": "Useful class for binary operations",
-  "keywords": ["binary", "flags", "bitwise", "bitwiser", "operations"],
+  "keywords": ["binary", "flags", "class", "trait", "eloquent", "model", "bitwise", "bitwiser", "operations"],
   "homepage": "https://github.com/reinder83/binary-flags",
   "minimum-stability": "stable",
   "license": "MIT",
