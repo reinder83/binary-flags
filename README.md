@@ -103,6 +103,11 @@ var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAR));
 
 var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAZ, false)); 
 // true because one of the flags is set (FOO)
+
+// alias of the above method
+var_export($exampleFlags->checkAnyFlag(ExampleFlags::FOO | ExampleFlags::BAZ)); 
+// true
+
 ```
 
 ##### Flag names example
