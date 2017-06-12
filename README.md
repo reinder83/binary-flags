@@ -2,7 +2,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/reinder83/binary-flags/badge.svg?branch=master&v=1)](https://coveralls.io/github/reinder83/binary-flags?branch=master)
 
 # BinaryFlags
-With this class you can easily add flags to your models.
+With this class you can easily add flags to your projects.
   
 The number of flags you can use is limited to the architecture of your system, e.g.: 32 flags on a 32-bit system or 64 flags on 64-bit system. 
 To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalant in your datastorage.
@@ -12,7 +12,7 @@ This package also comes with a trait which you can use to implement binary flags
 ## Installing
 To install this package simply run the following command in the root of your project.
 ```
-composer require reinder83\binary-flags
+composer require reinder83/binary-flags
 ```
 
 ## Methods
@@ -22,12 +22,12 @@ The following methods can be used:
 Overwrite the current mask.
 This can be passed as first argument in the constructor.
 
-##### getMask()
+##### getMask(): int
 Retrieve the current mask.
 
 ##### setOnModifyCallback(callable $onModify)
 Set a callback function which is called when the mask changes. 
-This can be passed as second argument in the contructor.
+This can be passed as second argument in the constructor.
 
 ##### getFlagNames([int $mask, [bool $asArray=false]])
 Give the name(s) for the given `$mask` or the current mask when omitted.
@@ -35,15 +35,18 @@ When `$asArray` is `true` the method will return an array with the names,
 otherwise an comma separated string will be returned (default).
 
 ##### addFlag(int $flag)
-Adds one or multiple flags the to current mask.
+Adds one or multiple flags to the current mask.
 
 ##### removeFlag(int $flag)
 Removes one or multiple flags from the current mask.
 
-##### checkFlag(int $flag, [bool $checkAll=true])
+##### checkFlag(int $flag, [bool $checkAll=true]): bool
 Check if given flag(s) are set in the current mask. 
 By default it will check all bits in the given flag. 
 When you want to match any of the given flags set `$checkAll` to `false`.
+
+##### checkAnyFlag(int $mask): bool
+For you convenient I've added an alias to checkFlag with `$checkAll` set to `false`.
 
 ## Example usage
 
@@ -98,7 +101,7 @@ var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAZ));
 var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAR)); 
 // true because both flags are set
 
-var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAZ, true)); 
+var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAZ, false)); 
 // true because one of the flags is set (FOO)
 ```
 
@@ -121,7 +124,7 @@ array (
 )
 */
 
-// get mask of given mask
+// get flag names of given mask
 var_export($exampleFlags->getFlagNames(ExampleFlags::FOO | ExampleFlags::BAR));
 // 'Foo, Bar'
 ```
