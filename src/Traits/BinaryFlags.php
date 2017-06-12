@@ -149,4 +149,15 @@ trait BinaryFlags
         $result = $this->mask & $flag;
         return $checkAll ? $result == $flag : $result > 0;
     }
+
+    /**
+     * Check if any given flag(s) are set in the current mask
+     *
+     * @param int $mask
+     * @return bool
+     */
+    public function checkAnyFlag($mask)
+    {
+        return $this->checkFlag($mask, false);
+    }
 }

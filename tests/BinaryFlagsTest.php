@@ -53,7 +53,7 @@ class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ));
         $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
 
-        // flag 1 and 2 should be set resulting in 3
+        // flag 1 and 2 should be resulting in 3
         $this->assertEquals(0x3, $this->test->getMask());
     }
 
@@ -67,6 +67,10 @@ class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
         // test if any are set
         $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ, false));
         $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ | ExampleFlags::QUX, false));
+
+        // test if any are set
+        $this->assertTrue($this->test->checkAnyFlag(ExampleFlags::BAR | ExampleFlags::BAZ));
+        $this->assertFalse($this->test->checkAnyFlag(ExampleFlags::BAZ | ExampleFlags::QUX));
     }
 
     // test the callback method
