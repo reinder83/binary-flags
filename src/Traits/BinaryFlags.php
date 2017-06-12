@@ -38,9 +38,9 @@ trait BinaryFlags
         $calledClass = get_called_class();
 
         $reflection = new ReflectionClass($calledClass);
-        $constants = $reflection->getConstants();
+        $constants  = $reflection->getConstants();
 
-        $names = array();
+        $names = [];
         if ($constants) {
             foreach ($constants as $constant => $flag) {
                 if ($mask & $flag) {
@@ -81,7 +81,7 @@ trait BinaryFlags
      */
     public function setMask($mask)
     {
-        $before = $this->mask;
+        $before     = $this->mask;
         $this->mask = $mask;
 
         if ($before !== $this->mask) {
@@ -109,7 +109,7 @@ trait BinaryFlags
      */
     public function addFlag($flag)
     {
-        $before = $this->mask;
+        $before     = $this->mask;
         $this->mask |= $flag;
 
         if ($before !== $this->mask) {
@@ -126,7 +126,7 @@ trait BinaryFlags
      */
     public function removeFlag($flag)
     {
-        $before = $this->mask;
+        $before     = $this->mask;
         $this->mask &= ~$flag;
 
         if ($before !== $this->mask) {
@@ -138,7 +138,7 @@ trait BinaryFlags
     /**
      * Check if given flag(s) are set in the current mask
      * By default it will check all bits in the given flag
-     * When you want to match any of the given flags set $check_all to false
+     * When you want to match any of the given flags set $checkAll to false
      *
      * @param int $flag
      * @param bool $checkAll
