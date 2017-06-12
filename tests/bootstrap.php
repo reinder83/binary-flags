@@ -21,6 +21,7 @@ namespace Reinder83\BinaryFlags\Tests {
         const FOO = Bits::BIT_1;
         const BAR = Bits::BIT_2;
         const BAZ = Bits::BIT_3;
+        const QUX = Bits::BIT_4;
     }
 
     /**
@@ -33,6 +34,7 @@ namespace Reinder83\BinaryFlags\Tests {
         const FOO = Bits::BIT_1;
         const BAR = Bits::BIT_2;
         const BAZ = Bits::BIT_3;
+        const QUX = Bits::BIT_4;
 
         public static function getAllFlags()
         {
@@ -40,6 +42,7 @@ namespace Reinder83\BinaryFlags\Tests {
                 static::FOO => 'My foo description',
                 static::BAR => 'My bar description',
                 static::BAZ => 'My baz description',
+                static::QUX => 'My qux description',
             ];
         }
 
