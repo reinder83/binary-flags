@@ -57,6 +57,18 @@ class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0x3, $this->test->getMask());
     }
 
+    // test check flags with multiple flags
+    public function testMultipleFlags()
+    {
+        // test if all are set
+        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO | ExampleFlags::BAR));
+        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ));
+
+        // test if any are set
+        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ, false));
+        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ | ExampleFlags::QUX, false));
+    }
+
     // test the callback method
     public function testCallback()
     {
