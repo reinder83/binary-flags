@@ -2,133 +2,90 @@
 
 namespace Reinder83\BinaryFlags\Tests;
 
-class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
+use Reinder83\BinaryFlags\Bits;
+use Reinder83\BinaryFlags\Flag;
+
+class BinaryFlagsTest extends TestCase
 {
-    /**
-     * @var ExampleFlags
-     */
-    protected $test;
-
-    /**
-     * @var callable
-     */
-    protected $callback;
-
-    /**
-     * @var int
-     */
-    protected $mask = 0x0;
-
-    /**
-     * public method to set the mask
-     * @param $mask
-     */
-    public function setMask($mask)
+    public function testNamedConstructor()
     {
-        $this->mask = $mask;
+        $mask = Bits::BIT_1 | Bits::BIT_2;
+
+        $flags = ExampleFlags::make($mask);
+
+        $this->assertEquals($mask, $flags->getMask());
     }
 
-    // set up test case
-    public function setUp()
+    public function testEventListener()
     {
-        // base mask
-        $this->mask = ExampleFlags::FOO | ExampleFlags::BAR;
+        $flags = new ExampleFlags();
 
-        // callback function
-        $model = $this;
-        $this->callback = function(ExampleFlags $flags) use ($model) {
-            $model->setMask($flags->getMask());
-        };
+        $flags->setMask(0x0);
 
-        // create new class with FOO and BAR set
-        $this->test = new ExampleFlags($this->mask, $this->callback);
-    }
+        // When BIT_2 is given we remove BIT_1
+        $flags->addBeforeEventListener(function($new, $old) {
+            if(Flag::has($new, Bits::BIT_2)) {
+                return Flag::remove($new, Bits::BIT_1);
+            } elseif(Flag::has($new, Bits::BIT_1)) {
+                return Flag::remove($new, Bits::BIT_2);
+            }
+        });
 
-    // test base mask set in setUp
-    public function testBaseMask()
-    {
-        // verify if the correct flags are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO));
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
+        $flags->addBeforeEventListener(function($new, $old) {
+            if(Flag::hasAny($new, Bits::BIT_3, Bits::BIT_4)) {
+                return false;
+            }
+        });
 
-        // flag 1 and 2 should be resulting in 3
-        $this->assertEquals(0x3, $this->test->getMask());
-    }
+        $flags->addFlag(Bits::BIT_1 | Bits::BIT_2);
 
-    // test check flags with multiple flags
-    public function testMultipleFlags()
-    {
-        // test if all are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO | ExampleFlags::BAR));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ));
+        $this->assertEquals(Bits::BIT_2, $flags->getMask());
 
-        // test if any are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ, false));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ | ExampleFlags::QUX, false));
+        $flags->addFlag([Bits::BIT_3, Bits::BIT_5]);
 
-        // test if any are set
-        $this->assertTrue($this->test->checkAnyFlag(ExampleFlags::BAR | ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkAnyFlag(ExampleFlags::BAZ | ExampleFlags::QUX));
-    }
-
-    // test the callback method
-    public function testCallback()
-    {
-        // add BAZ which result in mask = 7
-        $this->test->addFlag(ExampleFlags::BAZ);
-
-        // the callback method should set the mask in this class to 7
-        $this->assertEquals(0x7, $this->mask);
-    }
-
-    // test adding a flag
-    public function testAddFlag()
-    {
-        // add a flag
-        $this->test->addFlag(ExampleFlags::BAZ);
-
-        // add an existing flag
-        $this->test->addFlag(ExampleFlags::FOO);
-
-        // verify if the correct flags are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO));
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR));
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
-    }
-
-    // test removing a flag
-    public function testRemoveFlag()
-    {
-        // remove a flag
-        $this->test->removeFlag(ExampleFlags::BAR);
-
-        // remove an non-existing flag
-        $this->test->removeFlag(ExampleFlags::BAZ);
-
-        // verify if the correct flags are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAR));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
+        $this->assertEquals(Bits::BIT_2, $flags->getMask());
     }
 
     public function testFlagNames()
     {
-        $this->assertEquals('Foo, Bar', $this->test->getFlagNames());
+        $flags = ExampleFlagsWithNames::make([
+            ExampleFlagsWithNames::BAR,
+            ExampleFlagsWithNames::FOO
+        ]);
 
-        $this->assertEquals('Baz', $this->test->getFlagNames(ExampleFlags::BAZ));
+        $this->assertEquals([
+            ExampleFlagsWithNames::FOO => 'My foo description',
+            ExampleFlagsWithNames::BAR => 'My bar description',
+        ], $flags->getFlags());
 
-        $this->assertEquals(['Foo', 'Bar'], $this->test->getFlagNames(null, true));
+        $flags->setCustomFlagNames($custom = [
+            ExampleFlagsWithNames::FOO => 'My new foo description',
+            ExampleFlagsWithNames::BAR => 'My new bar description',
+        ]);
+
+        $this->assertEquals($custom, $flags->getFlags());
     }
 
-    public function testNamedFlagNames()
+    public function testLaravelIntegration()
     {
-        // same mask as exampleFlags
-        $named = new ExampleFlagsWithNames($this->test->getMask());
+        // Testing empty model
+        $model = ModelFlags::newInstance();
 
-        $this->assertEquals('My foo description, My bar description', $named->getFlagNames());
+        $this->assertFalse(isset($model->attributes[$model->flagsColumn()]));
+
+        $model->addFlag(ModelFlags::FOO, ModelFlags::BAR);
+
+        $this->assertTrue(isset($model->attributes[$model->flagsColumn()]));
+        $this->assertEquals(ModelFlags::FOO | ModelFlags::BAR, $model->attributes[$model->flagsColumn()]);
+
+        $this->assertTrue($model->hasFlag(ModelFlags::FOO, ModelFlags::BAR));
+        $this->assertFalse($model->hasFlag(ModelFlags::FOO, ModelFlags::BAR, ModelFlags::BAZ));
+        $this->assertFalse($model->hasFlag(ModelFlags::QUX, ModelFlags::BAR, ModelFlags::BAZ));
+        $this->assertTrue($model->hasAnyFlag(ModelFlags::FOO, ModelFlags::BAR, ModelFlags::BAZ));
+        $this->assertFalse($model->hasAnyFlag(ModelFlags::QUX));
+
+        $model->removeFlag(ModelFlags::FOO);
+
+        $this->assertEquals(ModelFlags::BAR, $model->attributes[$model->flagsColumn()]);
     }
 }
