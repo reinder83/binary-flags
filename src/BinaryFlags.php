@@ -9,20 +9,13 @@ namespace Reinder83\BinaryFlags;
  */
 abstract class BinaryFlags
 {
-    use Traits\BinaryFlags;
+    use Traits\HasBinaryFlags;
 
-    /**
-     * Initiate class
-     * @param int [$mask = 0]
-     * @param callable [$onModify = null]
-     */
-    public function __construct($mask = 0, callable $onModify = null)
+    public static function make(...$flags)
     {
-        $this->setMask($mask);
+        $binaryFlags = new static();
+        $binaryFlags->addFlag(...$flags);
 
-        // set onModify callback if specified
-        if ($onModify !== null) {
-            $this->setOnModifyCallback($onModify);
-        }
+        return $binaryFlags;
     }
 }
