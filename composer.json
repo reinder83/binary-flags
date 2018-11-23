@@ -34,7 +34,8 @@
     "phploc/phploc": "^4.0",
     "pdepend/pdepend": "^2.5",
     "mayflower/php-codebrowser": "^2.0",
-    "johnkary/phpunit-speedtrap": "^3.0"
+    "johnkary/phpunit-speedtrap": "^3.0",
+    "php-coveralls/php-coveralls": "^2.1"
   },
   "autoload-dev": {
     "psr-4": {
