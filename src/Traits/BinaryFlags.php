@@ -3,6 +3,7 @@
 namespace Reinder83\BinaryFlags\Traits;
 
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * This trait holds useful methods for checking, adding or removing binary flags
@@ -24,6 +25,49 @@ trait BinaryFlags
     protected $onModifyCallback;
 
     /**
+     * Return an array with all flags as key with a name as description
+     *
+     * @return array
+     */
+    public static function getAllFlags()
+    {
+        try {
+            $reflection = new ReflectionClass(get_called_class());
+            // @codeCoverageIgnoreStart
+        } catch (ReflectionException $e) {
+            return [];
+        }
+        // @codeCoverageIgnoreEnd
+
+        $constants = $reflection->getConstants();
+
+        $flags = [];
+        if ($constants) {
+            foreach ($constants as $constant => $flag) {
+                if (is_numeric($flag)) {
+                    $flags[$flag] = implode('', array_map('ucfirst', explode('_', strtolower($constant))));
+                }
+            }
+        }
+
+        return $flags;
+    }
+
+    /**
+     * Get all available flags as a mask
+     */
+    public static function getAllFlagsMask()
+    {
+        return array_reduce(
+            array_keys(static::getAllFlags()),
+            function ($flag, $carry) {
+                return $carry | $flag;
+            },
+            0
+        );
+    }
+
+    /**
      * Check mask against constants
      * and return the names or descriptions in a comma separated string or as array
      *
@@ -33,23 +77,15 @@ trait BinaryFlags
      */
     public function getFlagNames($mask = null, $asArray = false)
     {
-        $mask = $mask ?: $this->mask;
-
-        $calledClass = get_called_class();
-
-        $reflection = new ReflectionClass($calledClass);
-        $constants  = $reflection->getConstants();
-
+        $mask  = isset($mask) ? $mask : $this->mask;
         $names = [];
-        if ($constants) {
-            foreach ($constants as $constant => $flag) {
-                if ($mask & $flag) {
-                    $names[] = method_exists($calledClass, 'getAllFlags') && !empty($calledClass::getAllFlags()[$flag])
-                        ? $calledClass::getAllFlags()[$flag]
-                        : implode('', array_map('ucfirst', explode('_', strtolower($constant))));
-                }
+
+        foreach (static::getAllFlags() as $flag => $desc) {
+            if (is_numeric($flag) && ($mask & $flag)) {
+                $names[$flag] = $desc;
             }
         }
+
         return $asArray ? $names : implode(', ', $names);
     }
 

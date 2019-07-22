@@ -17,14 +17,14 @@
     }
   },
   "require-dev": {
-    "phpmd/phpmd": "@stable",
-    "sebastian/phpcpd": "*",
-    "squizlabs/php_codesniffer": "2.*",
-    "phpunit/phpunit": "^4.8 || ^5.5",
-    "phploc/phploc": "*",
-    "pdepend/pdepend": "2.2.4",
-    "mayflower/php-codebrowser": "~1.1",
-    "johnkary/phpunit-speedtrap": "^1.0"
+    "phpmd/phpmd": "^2.6",
+    "sebastian/phpcpd": "^4.1",
+    "squizlabs/php_codesniffer": "^3.4",
+    "phpunit/phpunit": "^8.2",
+    "phploc/phploc": "^5.0",
+    "pdepend/pdepend": "^2.5",
+    "mayflower/php-codebrowser": "^2.0",
+    "johnkary/phpunit-speedtrap": "^3.1"
   },
   "autoload-dev": {
     "psr-4": {

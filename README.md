@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/reinder83/binary-flags.svg?branch=master)](https://travis-ci.org/reinder83/binary-flags)
 [![Coverage Status](https://coveralls.io/repos/github/reinder83/binary-flags/badge.svg?branch=master&v=1)](https://coveralls.io/github/reinder83/binary-flags?branch=master)
 
+
 # BinaryFlags
 With this class you can easily add flags to your projects.
   
@@ -8,6 +9,7 @@ The number of flags you can use is limited to the architecture of your system, e
 To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalant in your datastorage.
 
 This package also comes with a trait which you can use to implement binary flags directly in your own class.
+
 
 ## Installing
 To install this package simply run the following command in the root of your project.
@@ -46,7 +48,23 @@ By default it will check all bits in the given flag.
 When you want to match any of the given flags set `$checkAll` to `false`.
 
 ##### checkAnyFlag(int $mask): bool
+_Since: v1.0.1_ \
 For you convenient I've added an alias to checkFlag with `$checkAll` set to `false`.
+
+
+## Static Methods
+The following static methods can be used:
+
+##### getAllFlags(): array
+_Since: v1.1.0_ \
+Return all the flags with their names as an array, using their flag mask as key.
+This method can also be overloaded to return custom names for the flags, 
+which will be used by the `getFlagNames` method.
+
+##### getAllFlagsMask(): int
+_Since: v1.1.0_ \
+Return mask of all the flags together
+
 
 ## Example usage
 
@@ -203,6 +221,7 @@ $test = Test::find(1);
 // do binary operations on the flags class as described earlier
 $test->flags->checkFlag(ExampleFlag::FOO);
 ```
+
 
 ## Support
 For bugs or feature requests feel free to contact me or submit an issue or pull request. 

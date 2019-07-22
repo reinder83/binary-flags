@@ -2,7 +2,9 @@
 
 namespace Reinder83\BinaryFlags\Tests;
 
-class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class BinaryFlagsTest extends TestCase
 {
     /**
      * @var ExampleFlags
@@ -21,6 +23,7 @@ class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
 
     /**
      * public method to set the mask
+     *
      * @param $mask
      */
     public function setMask($mask)
@@ -29,14 +32,14 @@ class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
     }
 
     // set up test case
-    public function setUp()
+    public function setUp(): void
     {
         // base mask
         $this->mask = ExampleFlags::FOO | ExampleFlags::BAR;
 
         // callback function
-        $model = $this;
-        $this->callback = function(ExampleFlags $flags) use ($model) {
+        $model          = $this;
+        $this->callback = function (ExampleFlags $flags) use ($model) {
             $model->setMask($flags->getMask());
         };
 
@@ -121,7 +124,10 @@ class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Baz', $this->test->getFlagNames(ExampleFlags::BAZ));
 
-        $this->assertEquals(['Foo', 'Bar'], $this->test->getFlagNames(null, true));
+        $this->assertEquals([
+            ExampleFlags::FOO => 'Foo',
+            ExampleFlags::BAR => 'Bar',
+        ], $this->test->getFlagNames(null, true));
     }
 
     public function testNamedFlagNames()
@@ -130,5 +136,10 @@ class BinaryFlagsTest extends \PHPUnit_Framework_TestCase
         $named = new ExampleFlagsWithNames($this->test->getMask());
 
         $this->assertEquals('My foo description, My bar description', $named->getFlagNames());
+    }
+
+    public function testGetAllFlagsMask()
+    {
+        $this->assertEquals(1+2+4+8, ExampleFlags::getAllFlagsMask());
     }
 }
