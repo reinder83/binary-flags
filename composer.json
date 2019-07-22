@@ -1,7 +1,17 @@
 {
   "name": "reinder83/binary-flags",
   "description": "Useful class for binary operations",
-  "keywords": ["binary", "flags", "class", "trait", "eloquent", "model", "bitwise", "bitwiser", "operations"],
+  "keywords": [
+    "binary",
+    "flags",
+    "class",
+    "trait",
+    "eloquent",
+    "model",
+    "bitwise",
+    "bitwiser",
+    "operations"
+  ],
   "homepage": "https://github.com/reinder83/binary-flags",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -16,15 +26,20 @@
       "Reinder83\\BinaryFlags\\": "src/"
     }
   },
+  "config": {
+    "platform": {
+      "php": "5.6"
+    }
+  },
   "require-dev": {
     "phpmd/phpmd": "^2.6",
-    "sebastian/phpcpd": "^4.1",
+    "sebastian/phpcpd": "^3.0",
     "squizlabs/php_codesniffer": "^3.4",
-    "phpunit/phpunit": "^8.2",
-    "phploc/phploc": "^5.0",
+    "phpunit/phpunit": "^5.7",
+    "phploc/phploc": "^4.0",
     "pdepend/pdepend": "^2.5",
-    "mayflower/php-codebrowser": "^2.0",
-    "johnkary/phpunit-speedtrap": "^3.1"
+    "mayflower/php-codebrowser": "^1.1",
+    "johnkary/phpunit-speedtrap": "^1.1"
   },
   "autoload-dev": {
     "psr-4": {
