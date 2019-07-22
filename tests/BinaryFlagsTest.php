@@ -32,7 +32,7 @@ class BinaryFlagsTest extends TestCase
     }
 
     // set up test case
-    public function setUp(): void
+    public function setUp()
     {
         // base mask
         $this->mask = ExampleFlags::FOO | ExampleFlags::BAR;
