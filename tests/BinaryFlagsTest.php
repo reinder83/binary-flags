@@ -150,15 +150,15 @@ class BinaryFlagsTest extends TestCase
 
     public function testIterable()
     {
+        $test          = new ExampleFlagsWithNames(ExampleFlags::FOO | ExampleFlags::BAZ);
+        $expectedFlags = $test->getFlagNames(ExampleFlags::FOO | ExampleFlags::BAZ, true);
+
         $result = [];
-        foreach ($this->test as $bit => $value) {
-            $result[$bit] = $value;
+        foreach ($test as $flag => $description) {
+            $result[$flag] = $description;
         }
 
-        $this->assertEquals([
-            1 => ExampleFlags::FOO,
-            2 => ExampleFlags::BAR,
-        ], $result);
+        $this->assertEquals($expectedFlags, $result);
     }
 
     public function testJsonSerializable()

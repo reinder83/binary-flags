@@ -51,6 +51,13 @@ When you want to match any of the given flags set `$checkAll` to `false`.
 _Since: v1.0.1_ \
 For you convenient I've added an alias to checkFlag with `$checkAll` set to `false`.
 
+##### count(): int
+_Since: v1.2.0_ \
+Returns the number of flags that have been set.
+
+##### jsonSerialize(): mixed
+_Since: v1.2.0_ \
+Return a value that can be encoded by json_encode() in the form of `["mask" => 7]`
 
 ## Static Methods
 The following static methods can be used:
@@ -65,6 +72,9 @@ which will be used by the `getFlagNames` method.
 _Since: v1.1.0_ \
 Return mask of all the flags together
 
+## Iteration
+
+You can treat a BinaryFlags object as an iterable, where each iteration will return the next bit value that has been set including its description (or the name of the constant representing the bit value).
 
 ## Example usage
 

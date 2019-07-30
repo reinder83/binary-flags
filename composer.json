@@ -45,5 +45,8 @@
     "psr-4": {
       "Reinder83\\BinaryFlags\\Tests\\": "tests/"
     }
+  },
+  "require": {
+    "ext-json": "*"
   }
 }

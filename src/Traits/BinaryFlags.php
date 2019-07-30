@@ -14,12 +14,14 @@ trait BinaryFlags
 {
     /**
      * This will hold the mask for checking against
+     *
      * @var int
      */
     protected $mask;
 
     /**
      * This will be called on changes
+     *
      * @var callable
      */
     protected $onModifyCallback;
@@ -50,7 +52,7 @@ trait BinaryFlags
         if ($constants) {
             foreach ($constants as $constant => $flag) {
                 if (is_numeric($flag)) {
-                    $flags[$flag] = implode('', array_map('ucfirst', explode('_', strtolower($constant))));
+                    $flags[$flag] = 'wtf';//implode('', array_map('ucfirst', explode('_', strtolower($constant))));
                 }
             }
         }
@@ -78,6 +80,7 @@ trait BinaryFlags
      *
      * @param int [$mask = null]
      * @param bool [$asArray = false]
+     *
      * @return string|array
      */
     public function getFlagNames($mask = null, $asArray = false)
@@ -118,6 +121,7 @@ trait BinaryFlags
      * This method will set the mask where will be checked against
      *
      * @param int $mask
+     *
      * @return BinaryFlags
      */
     public function setMask($mask)
@@ -146,6 +150,7 @@ trait BinaryFlags
      * This will set flag(s) in the current mask
      *
      * @param int $flag
+     *
      * @return BinaryFlags
      */
     public function addFlag($flag)
@@ -156,6 +161,7 @@ trait BinaryFlags
         if ($before !== $this->mask) {
             $this->onModify();
         }
+
         return $this;
     }
 
@@ -163,6 +169,7 @@ trait BinaryFlags
      * This will remove a flag(s) (if it's set) in the current mask
      *
      * @param int $flag
+     *
      * @return BinaryFlags
      */
     public function removeFlag($flag)
@@ -173,6 +180,7 @@ trait BinaryFlags
         if ($before !== $this->mask) {
             $this->onModify();
         }
+
         return $this;
     }
 
@@ -181,13 +189,15 @@ trait BinaryFlags
      * By default it will check all bits in the given flag
      * When you want to match any of the given flags set $checkAll to false
      *
-     * @param int $flag
+     * @param int  $flag
      * @param bool $checkAll
+     *
      * @return bool
      */
     public function checkFlag($flag, $checkAll = true)
     {
         $result = $this->mask & $flag;
+
         return $checkAll ? $result == $flag : $result > 0;
     }
 
@@ -195,6 +205,7 @@ trait BinaryFlags
      * Check if any given flag(s) are set in the current mask
      *
      * @param int $mask
+     *
      * @return bool
      */
     public function checkAnyFlag($mask)
@@ -205,21 +216,19 @@ trait BinaryFlags
     /**
      * Return the current element
      *
-     * @link  https://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
-     * @since 5.0.0
+     * @return string the description of the flag or the name of the constant
+     * @since 1.2.0
      */
     public function current()
     {
-        return $this->mask & $this->currentPos;
+        return $this->getFlagNames($this->currentPos);
     }
 
     /**
      * Move forward to next element
      *
-     * @link  https://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
+     * @return void
+     * @since 1.2.0
      */
     public function next()
     {
@@ -232,27 +241,19 @@ trait BinaryFlags
     /**
      * Return the key of the current element
      *
-     * @link  https://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
-     * @since 5.0.0
+     * @return int the flag
+     * @since 1.2.0
      */
     public function key()
     {
-        $key = 0;
-        while ((1 << $key) !== $this->currentPos) {
-            $key++;
-        }
-
-        return $key + 1;
+        return $this->currentPos;
     }
 
     /**
      * Checks if current position is valid
      *
-     * @link  https://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
-     * @since 5.0.0
+     * @return boolean Returns true on success or false on failure.
+     * @since 1.2.0
      */
     public function valid()
     {
@@ -262,15 +263,15 @@ trait BinaryFlags
     /**
      * Rewind the Iterator to the first element
      *
-     * @link  https://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
-     * @since 5.0.0
+     * @return void
+     * @since 1.2.0
      */
     public function rewind()
     {
         // find the first element
         if ($this->mask === 0) {
             $this->currentPos = 0;
+
             return;
         }
 
@@ -283,22 +284,20 @@ trait BinaryFlags
     /**
      * Returns the number of flags that are set
      *
-     * @link  https://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     * </p>
-     * <p>
+     * @return int
+     *
      * The return value is cast to an integer.
-     * @since 5.1.0
+     * @since 1.2.0
      */
     public function count()
     {
         $count = 0;
-        $mask = $this->mask;
+        $mask  = $this->mask;
 
-        while ($mask != 0)
-        {
-            if (($mask & 1) == 1)
+        while ($mask != 0) {
+            if (($mask & 1) == 1) {
                 $count++;
+            }
             $mask >>= 1;
         }
 
@@ -308,13 +307,11 @@ trait BinaryFlags
     /**
      * Specify data which should be serialized to JSON
      *
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
+     * @since 1.2.0
      */
     public function jsonSerialize()
     {
-        return [ 'mask' => $this->mask ];
+        return ['mask' => $this->mask];
     }
 }
