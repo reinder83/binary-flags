@@ -25,6 +25,11 @@ trait BinaryFlags
     protected $onModifyCallback;
 
     /**
+     * @var int
+     */
+    private $currentPos = 0;
+
+    /**
      * Return an array with all flags as key with a name as description
      *
      * @return array
@@ -195,5 +200,121 @@ trait BinaryFlags
     public function checkAnyFlag($mask)
     {
         return $this->checkFlag($mask, false);
+    }
+
+    /**
+     * Return the current element
+     *
+     * @link  https://php.net/manual/en/iterator.current.php
+     * @return mixed Can return any type.
+     * @since 5.0.0
+     */
+    public function current()
+    {
+        return $this->mask & $this->currentPos;
+    }
+
+    /**
+     * Move forward to next element
+     *
+     * @link  https://php.net/manual/en/iterator.next.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function next()
+    {
+        $this->currentPos <<= 1; // shift to next bit
+        while (($this->mask & $this->currentPos) == 0 && $this->currentPos > 0) {
+            $this->currentPos <<= 1;
+        }
+    }
+
+    /**
+     * Return the key of the current element
+     *
+     * @link  https://php.net/manual/en/iterator.key.php
+     * @return mixed scalar on success, or null on failure.
+     * @since 5.0.0
+     */
+    public function key()
+    {
+        $key = 0;
+        while ((1 << $key) !== $this->currentPos) {
+            $key++;
+        }
+
+        return $key + 1;
+    }
+
+    /**
+     * Checks if current position is valid
+     *
+     * @link  https://php.net/manual/en/iterator.valid.php
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     * Returns true on success or false on failure.
+     * @since 5.0.0
+     */
+    public function valid()
+    {
+        return $this->currentPos > 0;
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     *
+     * @link  https://php.net/manual/en/iterator.rewind.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function rewind()
+    {
+        // find the first element
+        if ($this->mask === 0) {
+            $this->currentPos = 0;
+            return;
+        }
+
+        $this->currentPos = 1;
+        while (($this->mask & $this->currentPos) == 0) {
+            $this->currentPos <<= 1;
+        }
+    }
+
+    /**
+     * Returns the number of flags that are set
+     *
+     * @link  https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        $count = 0;
+        $mask = $this->mask;
+
+        while ($mask != 0)
+        {
+            if (($mask & 1) == 1)
+                $count++;
+            $mask >>= 1;
+        }
+
+        return $count;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [ 'mask' => $this->mask ];
     }
 }

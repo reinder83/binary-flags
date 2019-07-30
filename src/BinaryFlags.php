@@ -2,12 +2,15 @@
 
 namespace Reinder83\BinaryFlags;
 
+use Countable;
+use Iterator;
+
 /**
  * This class holds useful methods for checking, adding or removing binary flags
  *
  * @author Reinder
  */
-abstract class BinaryFlags
+abstract class BinaryFlags implements Iterator, Countable, \JsonSerializable
 {
     use Traits\BinaryFlags;
 
