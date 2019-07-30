@@ -140,6 +140,32 @@ class BinaryFlagsTest extends TestCase
 
     public function testGetAllFlagsMask()
     {
-        $this->assertEquals(1+2+4+8, ExampleFlags::getAllFlagsMask());
+        $this->assertEquals(1 + 2 + 4 + 8, ExampleFlags::getAllFlagsMask());
+    }
+
+    public function testCountable()
+    {
+        $this->assertEquals(2, $this->test->count());
+    }
+
+    public function testIterable()
+    {
+        $test          = new ExampleFlagsWithNames(ExampleFlags::FOO | ExampleFlags::BAZ);
+        $expectedFlags = $test->getFlagNames(ExampleFlags::FOO | ExampleFlags::BAZ, true);
+
+        $result = [];
+        foreach ($test as $flag => $description) {
+            $result[$flag] = $description;
+        }
+
+        $this->assertEquals($expectedFlags, $result);
+    }
+
+    public function testJsonSerializable()
+    {
+        $this->assertEquals(
+            sprintf('{"mask":%d}', $this->test->getMask()),
+            json_encode($this->test)
+        );
     }
 }

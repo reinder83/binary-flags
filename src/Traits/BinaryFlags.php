@@ -14,15 +14,22 @@ trait BinaryFlags
 {
     /**
      * This will hold the mask for checking against
+     *
      * @var int
      */
     protected $mask;
 
     /**
      * This will be called on changes
+     *
      * @var callable
      */
     protected $onModifyCallback;
+
+    /**
+     * @var int
+     */
+    private $currentPos = 0;
 
     /**
      * Return an array with all flags as key with a name as description
@@ -73,6 +80,7 @@ trait BinaryFlags
      *
      * @param int [$mask = null]
      * @param bool [$asArray = false]
+     *
      * @return string|array
      */
     public function getFlagNames($mask = null, $asArray = false)
@@ -113,6 +121,7 @@ trait BinaryFlags
      * This method will set the mask where will be checked against
      *
      * @param int $mask
+     *
      * @return BinaryFlags
      */
     public function setMask($mask)
@@ -141,6 +150,7 @@ trait BinaryFlags
      * This will set flag(s) in the current mask
      *
      * @param int $flag
+     *
      * @return BinaryFlags
      */
     public function addFlag($flag)
@@ -151,6 +161,7 @@ trait BinaryFlags
         if ($before !== $this->mask) {
             $this->onModify();
         }
+
         return $this;
     }
 
@@ -158,6 +169,7 @@ trait BinaryFlags
      * This will remove a flag(s) (if it's set) in the current mask
      *
      * @param int $flag
+     *
      * @return BinaryFlags
      */
     public function removeFlag($flag)
@@ -168,6 +180,7 @@ trait BinaryFlags
         if ($before !== $this->mask) {
             $this->onModify();
         }
+
         return $this;
     }
 
@@ -176,13 +189,15 @@ trait BinaryFlags
      * By default it will check all bits in the given flag
      * When you want to match any of the given flags set $checkAll to false
      *
-     * @param int $flag
+     * @param int  $flag
      * @param bool $checkAll
+     *
      * @return bool
      */
     public function checkFlag($flag, $checkAll = true)
     {
         $result = $this->mask & $flag;
+
         return $checkAll ? $result == $flag : $result > 0;
     }
 
@@ -190,10 +205,113 @@ trait BinaryFlags
      * Check if any given flag(s) are set in the current mask
      *
      * @param int $mask
+     *
      * @return bool
      */
     public function checkAnyFlag($mask)
     {
         return $this->checkFlag($mask, false);
+    }
+
+    /**
+     * Return the current element
+     *
+     * @return string the description of the flag or the name of the constant
+     * @since 1.2.0
+     */
+    public function current()
+    {
+        return $this->getFlagNames($this->currentPos);
+    }
+
+    /**
+     * Move forward to next element
+     *
+     * @return void
+     * @since 1.2.0
+     */
+    public function next()
+    {
+        $this->currentPos <<= 1; // shift to next bit
+        while (($this->mask & $this->currentPos) == 0 && $this->currentPos > 0) {
+            $this->currentPos <<= 1;
+        }
+    }
+
+    /**
+     * Return the key of the current element
+     *
+     * @return int the flag
+     * @since 1.2.0
+     */
+    public function key()
+    {
+        return $this->currentPos;
+    }
+
+    /**
+     * Checks if current position is valid
+     *
+     * @return boolean Returns true on success or false on failure.
+     * @since 1.2.0
+     */
+    public function valid()
+    {
+        return $this->currentPos > 0;
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     *
+     * @return void
+     * @since 1.2.0
+     */
+    public function rewind()
+    {
+        // find the first element
+        if ($this->mask === 0) {
+            $this->currentPos = 0;
+
+            return;
+        }
+
+        $this->currentPos = 1;
+        while (($this->mask & $this->currentPos) == 0) {
+            $this->currentPos <<= 1;
+        }
+    }
+
+    /**
+     * Returns the number of flags that are set
+     *
+     * @return int
+     *
+     * The return value is cast to an integer.
+     * @since 1.2.0
+     */
+    public function count()
+    {
+        $count = 0;
+        $mask  = $this->mask;
+
+        while ($mask != 0) {
+            if (($mask & 1) == 1) {
+                $count++;
+            }
+            $mask >>= 1;
+        }
+
+        return $count;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @since 1.2.0
+     */
+    public function jsonSerialize()
+    {
+        return ['mask' => $this->mask];
     }
 }
