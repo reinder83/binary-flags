@@ -205,24 +205,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Test extends Model
 {
+    private $flagsObject;
+
     /**
      * Retrieve flags
      * @return ExampleFlags
      */
     public function getFlagsAttribute()
     {
-        static $flags = null;
-        if ($flags === null) {
-            $model = $this;
-            $flags = new ExampleFlags(
+        if ($this->flagsObject === null) {
+            $this->flagsObject = new ExampleFlags(
                 $this->attributes['flags'], // set current flags mask
-                function (ExampleFlags $flags) use ($model) { // set callback function
+                function (ExampleFlags $flags) { // set callback function
                     // update the flags in this model
-                    $model->flags = $flags->getMask();
+                    $this->setAttribute('flags', $flags->getMask());
                 }
             );
         }
-        return $flags;
+        return $this->flagsObject;
     }
 }
 
