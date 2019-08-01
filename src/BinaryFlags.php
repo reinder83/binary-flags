@@ -16,6 +16,11 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
     use Traits\BinaryFlags;
 
     /**
+     * @var int
+     */
+    private $currentPos = 0;
+
+    /**
      * Initiate class
      * @param int [$mask = 0]
      * @param callable [$onModify = null]
