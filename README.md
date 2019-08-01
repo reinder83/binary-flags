@@ -1,6 +1,5 @@
-[![Build Status](https://travis-ci.org/reinder83/binary-flags.svg?branch=master)](https://travis-ci.org/reinder83/binary-flags)
-[![Coverage Status](https://coveralls.io/repos/github/reinder83/binary-flags/badge.svg?branch=master&v=1)](https://coveralls.io/github/reinder83/binary-flags?branch=master)
-
+[![Build Status][build-icon]][build-link]
+[![Coverage Status][coverage-icon]][coverage-link]
 
 # BinaryFlags
 With this class you can easily add flags to your projects.
@@ -236,3 +235,13 @@ $test->flags->checkFlag(ExampleFlag::FOO);
 
 ## Support
 For bugs or feature requests feel free to contact me or submit an issue or pull request. 
+Or you can support me by buying me a coffee:
+
+[![Buy me a coffee][buymeacoffee-icon]][buymeacoffee-link]
+
+[build-icon]: https://travis-ci.org/reinder83/binary-flags.svg?branch=master
+[build-link]: https://travis-ci.org/reinder83/binary-flags
+[coverage-icon]: https://coveralls.io/repos/github/reinder83/binary-flags/badge.svg?branch=master&v=1
+[coverage-link]: https://coveralls.io/github/reinder83/binary-flags?branch=master
+[buymeacoffee-icon]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
+[buymeacoffee-link]: https://www.buymeacoffee.com/reinder83

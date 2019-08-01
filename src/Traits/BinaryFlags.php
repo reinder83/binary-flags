@@ -27,11 +27,6 @@ trait BinaryFlags
     protected $onModifyCallback;
 
     /**
-     * @var int
-     */
-    private $currentPos = 0;
-
-    /**
      * Return an array with all flags as key with a name as description
      *
      * @return array
