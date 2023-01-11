@@ -22,8 +22,8 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
 
     /**
      * Initiate class
-     * @param int [$mask = 0]
-     * @param callable [$onModify = null]
+     * @param int $mask
+     * @param callable $onModify
      */
     public function __construct($mask = 0, callable $onModify = null)
     {
@@ -41,7 +41,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * @return string the description of the flag or the name of the constant
      * @since 1.2.0
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->getFlagNames($this->currentPos);
     }
@@ -52,7 +52,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * @return void
      * @since 1.2.0
      */
-    public function next()
+    public function next(): void
     {
         $this->currentPos <<= 1; // shift to next bit
         while (($this->mask & $this->currentPos) == 0 && $this->currentPos > 0) {
@@ -66,7 +66,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * @return int the flag
      * @since 1.2.0
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->currentPos;
     }
@@ -77,7 +77,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * @return boolean Returns true on success or false on failure.
      * @since 1.2.0
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->currentPos > 0;
     }
@@ -88,7 +88,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * @return void
      * @since 1.2.0
      */
-    public function rewind()
+    public function rewind(): void
     {
         // find the first element
         if ($this->mask === 0) {
@@ -111,7 +111,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * The return value is cast to an integer.
      * @since 1.2.0
      */
-    public function count()
+    public function count(): int
     {
         $count = 0;
         $mask  = $this->mask;
@@ -132,7 +132,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * @since 1.2.0
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ['mask' => $this->mask];
     }
