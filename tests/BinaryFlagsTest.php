@@ -9,7 +9,7 @@ class BinaryFlagsTest extends TestCase
     /**
      * @var ExampleFlags
      */
-    protected $test;
+    protected ExampleFlags $test;
 
     /**
      * @var callable
@@ -19,20 +19,20 @@ class BinaryFlagsTest extends TestCase
     /**
      * @var int
      */
-    protected $mask = 0x0;
+    protected int $mask = 0x0;
 
     /**
      * public method to set the mask
      *
-     * @param $mask
+     * @param int $mask
      */
-    public function setMask($mask)
+    public function setMask(int $mask): void
     {
         $this->mask = $mask;
     }
 
     // set up test case
-    public function setUp()
+    public function setUp(): void
     {
         // base mask
         $this->mask = ExampleFlags::FOO | ExampleFlags::BAR;
@@ -48,7 +48,7 @@ class BinaryFlagsTest extends TestCase
     }
 
     // test base mask set in setUp
-    public function testBaseMask()
+    public function testBaseMask(): void
     {
         // verify if the correct flags are set
         $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO));
@@ -61,7 +61,7 @@ class BinaryFlagsTest extends TestCase
     }
 
     // test check flags with multiple flags
-    public function testMultipleFlags()
+    public function testMultipleFlags(): void
     {
         // test if all are set
         $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO | ExampleFlags::BAR));
@@ -77,7 +77,7 @@ class BinaryFlagsTest extends TestCase
     }
 
     // test the callback method
-    public function testCallback()
+    public function testCallback(): void
     {
         // add BAZ which result in mask = 7
         $this->test->addFlag(ExampleFlags::BAZ);
@@ -87,7 +87,7 @@ class BinaryFlagsTest extends TestCase
     }
 
     // test adding a flag
-    public function testAddFlag()
+    public function testAddFlag(): void
     {
         // add a flag
         $this->test->addFlag(ExampleFlags::BAZ);
@@ -103,7 +103,7 @@ class BinaryFlagsTest extends TestCase
     }
 
     // test removing a flag
-    public function testRemoveFlag()
+    public function testRemoveFlag(): void
     {
         // remove a flag
         $this->test->removeFlag(ExampleFlags::BAR);
@@ -118,7 +118,7 @@ class BinaryFlagsTest extends TestCase
         $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
     }
 
-    public function testFlagNames()
+    public function testFlagNames(): void
     {
         $this->assertEquals('Foo, Bar', $this->test->getFlagNames());
 
@@ -130,7 +130,7 @@ class BinaryFlagsTest extends TestCase
         ], $this->test->getFlagNames(null, true));
     }
 
-    public function testNamedFlagNames()
+    public function testNamedFlagNames(): void
     {
         // same mask as exampleFlags
         $named = new ExampleFlagsWithNames($this->test->getMask());
@@ -138,17 +138,17 @@ class BinaryFlagsTest extends TestCase
         $this->assertEquals('My foo description, My bar description', $named->getFlagNames());
     }
 
-    public function testGetAllFlagsMask()
+    public function testGetAllFlagsMask(): void
     {
         $this->assertEquals(1 + 2 + 4 + 8, ExampleFlags::getAllFlagsMask());
     }
 
-    public function testCountable()
+    public function testCountable(): void
     {
         $this->assertEquals(2, $this->test->count());
     }
 
-    public function testIterable()
+    public function testIterable(): void
     {
         $test          = new ExampleFlagsWithNames(ExampleFlags::FOO | ExampleFlags::BAZ);
         $expectedFlags = $test->getFlagNames(ExampleFlags::FOO | ExampleFlags::BAZ, true);
@@ -161,7 +161,7 @@ class BinaryFlagsTest extends TestCase
         $this->assertEquals($expectedFlags, $result);
     }
 
-    public function testJsonSerializable()
+    public function testJsonSerializable(): void
     {
         $this->assertEquals(
             sprintf('{"mask":%d}', $this->test->getMask()),
