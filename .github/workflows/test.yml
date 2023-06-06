@@ -15,22 +15,23 @@ jobs:
           - 8.2
           - 8.1
           - 8.0
-      name: PHP ${{ matrix.php-versions }}
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
 
-        - name: Setup PHP
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: ${{ matrix.php-versions }}
-            extensions: json
-            coverage: none
+    name: PHP ${{ matrix.php-versions }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Install dependencies
-          run: composer install
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: json
+          coverage: none
 
-        - name: Run tests
-          run: vendor/bin/phpunit
-        - name: Run static analysis
-          run: vendor/bin/phpstan
+      - name: Install dependencies
+        run: composer install
+
+      - name: Run tests
+        run: vendor/bin/phpunit
+      - name: Run static analysis
+        run: vendor/bin/phpstan
