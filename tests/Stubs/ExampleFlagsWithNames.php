@@ -12,7 +12,7 @@ class ExampleFlagsWithNames extends BinaryFlags
     const BAZ = Bits::BIT_3;
     const QUX = Bits::BIT_4;
 
-    public static function getAllFlags()
+    public static function getAllFlags(): array
     {
         return [
             static::FOO => 'My foo description',

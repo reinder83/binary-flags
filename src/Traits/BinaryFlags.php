@@ -18,7 +18,7 @@ trait BinaryFlags
      *
      * @var int|float
      */
-    protected int|float $mask;
+    protected int|float $mask = 0;
 
     /**
      * This will be called on changes
