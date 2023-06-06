@@ -1,11 +1,8 @@
-[![Build Status][build-icon]][build-link]
-[![Coverage Status][coverage-icon]][coverage-link]
-
 # BinaryFlags
 With this class you can easily add flags to your projects.
   
 The number of flags you can use is limited to the architecture of your system, e.g.: 32 flags on a 32-bit system or 64 flags on 64-bit system. 
-To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalant in your datastorage.
+To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalent in your datastore.
 
 This package also comes with a trait which you can use to implement binary flags directly in your own class.
 
@@ -33,7 +30,7 @@ This can be passed as second argument in the constructor.
 ##### getFlagNames([int $mask, [bool $asArray=false]])
 Give the name(s) for the given `$mask` or the current mask when omitted.
 When `$asArray` is `true` the method will return an array with the names, 
-otherwise an comma separated string will be returned (default).
+otherwise a comma separated string will be returned (default).
 
 ##### addFlag(int $flag)
 Adds one or multiple flags to the current mask.
@@ -43,7 +40,7 @@ Removes one or multiple flags from the current mask.
 
 ##### checkFlag(int $flag, [bool $checkAll=true]): bool
 Check if given flag(s) are set in the current mask. 
-By default it will check all bits in the given flag. 
+By default, it will check all bits in the given flag. 
 When you want to match any of the given flags set `$checkAll` to `false`.
 
 ##### checkAnyFlag(int $mask): bool
@@ -139,7 +136,7 @@ var_export($exampleFlags->checkAnyFlag(ExampleFlags::FOO | ExampleFlags::BAZ));
 ```
 
 ##### Flag names example
-_By default the flag names are based on the constant names_
+_By default, the flag names are based on the constant names_
 ```php
 $exampleFlags = new ExampleFlags();
 
@@ -239,9 +236,5 @@ Or you can support me by buying me a coffee:
 
 [![Buy me a coffee][buymeacoffee-icon]][buymeacoffee-link]
 
-[build-icon]: https://travis-ci.org/reinder83/binary-flags.svg?branch=master
-[build-link]: https://travis-ci.org/reinder83/binary-flags
-[coverage-icon]: https://coveralls.io/repos/github/reinder83/binary-flags/badge.svg?branch=master&v=1
-[coverage-link]: https://coveralls.io/github/reinder83/binary-flags?branch=master
 [buymeacoffee-icon]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
 [buymeacoffee-link]: https://www.buymeacoffee.com/reinder83

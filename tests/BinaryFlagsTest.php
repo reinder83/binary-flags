@@ -3,6 +3,8 @@
 namespace Reinder83\BinaryFlags\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Reinder83\BinaryFlags\Tests\Stubs\ExampleFlags;
+use Reinder83\BinaryFlags\Tests\Stubs\ExampleFlagsWithNames;
 
 class BinaryFlagsTest extends TestCase
 {
@@ -32,7 +34,7 @@ class BinaryFlagsTest extends TestCase
     }
 
     // set up test case
-    public function setUp()
+    protected function setUp(): void
     {
         // base mask
         $this->mask = ExampleFlags::FOO | ExampleFlags::BAR;
@@ -150,8 +152,8 @@ class BinaryFlagsTest extends TestCase
 
     public function testIterable()
     {
-        $test          = new ExampleFlagsWithNames(ExampleFlags::FOO | ExampleFlags::BAZ);
-        $expectedFlags = $test->getFlagNames(ExampleFlags::FOO | ExampleFlags::BAZ, true);
+        $test          = new ExampleFlagsWithNames(ExampleFlagsWithNames::FOO | ExampleFlagsWithNames::BAZ);
+        $expectedFlags = $test->getFlagNames(ExampleFlagsWithNames::FOO | ExampleFlagsWithNames::BAZ, true);
 
         $result = [];
         foreach ($test as $flag => $description) {
