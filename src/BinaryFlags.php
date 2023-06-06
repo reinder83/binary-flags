@@ -2,6 +2,7 @@
 
 namespace Reinder83\BinaryFlags;
 
+use Closure;
 use Countable;
 use Iterator;
 use JsonSerializable;
@@ -18,14 +19,14 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
     /**
      * @var int
      */
-    private $currentPos = 0;
+    private int $currentPos = 0;
 
     /**
      * Initiate class
-     * @param int $mask
-     * @param callable $onModify
+     * @param int|float    $mask
+     * @param Closure|null $onModify
      */
-    public function __construct($mask = 0, callable $onModify = null)
+    public function __construct(int|float $mask = 0, ?Closure $onModify = null)
     {
         $this->setMask($mask);
 
@@ -41,9 +42,12 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
      * @return string the description of the flag or the name of the constant
      * @since 1.2.0
      */
-    public function current(): mixed
+    public function current(): string
     {
-        return $this->getFlagNames($this->currentPos);
+        /** @var string $result Will always be string since the second argument is false */
+        $result = $this->getFlagNames($this->currentPos, false);
+
+        return $result;
     }
 
     /**
@@ -63,10 +67,10 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
     /**
      * Return the key of the current element
      *
-     * @return int the flag
+     * @return int|float the flag
      * @since 1.2.0
      */
-    public function key(): mixed
+    public function key(): int|float
     {
         return $this->currentPos;
     }
@@ -114,7 +118,7 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
     public function count(): int
     {
         $count = 0;
-        $mask  = $this->mask;
+        $mask = $this->mask;
 
         while ($mask != 0) {
             if (($mask & 1) == 1) {
@@ -129,10 +133,10 @@ abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
     /**
      * Specify data which should be serialized to JSON
      *
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array{mask: int|float} data which can be serialized by <b>json_encode</b>,
      * @since 1.2.0
      */
-    public function jsonSerialize(): mixed
+    public function jsonSerialize(): array
     {
         return ['mask' => $this->mask];
     }

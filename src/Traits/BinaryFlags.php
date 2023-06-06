@@ -2,6 +2,7 @@
 
 namespace Reinder83\BinaryFlags\Traits;
 
+use Closure;
 use ReflectionClass;
 use ReflectionException;
 
@@ -15,28 +16,28 @@ trait BinaryFlags
     /**
      * This will hold the mask for checking against
      *
-     * @var int
+     * @var int|float
      */
-    protected $mask;
+    protected int|float $mask;
 
     /**
      * This will be called on changes
      *
-     * @var callable
+     * @var Closure|null
      */
-    protected $onModifyCallback;
+    protected ?Closure $onModifyCallback = null;
 
     /**
      * Return an array with all flags as key with a name as description
      *
-     * @return array
+     * @return array<int, string>
      */
-    public static function getAllFlags()
+    public static function getAllFlags(): array
     {
         try {
             $reflection = new ReflectionClass(get_called_class());
             // @codeCoverageIgnoreStart
-        } catch (ReflectionException $e) {
+        } catch (ReflectionException) {
             return [];
         }
         // @codeCoverageIgnoreEnd
@@ -58,7 +59,7 @@ trait BinaryFlags
     /**
      * Get all available flags as a mask
      */
-    public static function getAllFlagsMask()
+    public static function getAllFlagsMask(): int|float
     {
         return array_reduce(
             array_keys(static::getAllFlags()),
@@ -73,14 +74,13 @@ trait BinaryFlags
      * Check mask against constants
      * and return the names or descriptions in a comma separated string or as array
      *
-     * @param int [$mask = null]
-     * @param bool [$asArray = false]
-     *
-     * @return string|array
+     * @param int|null $mask
+     * @param bool     $asArray
+     * @return string|array<int, string>
      */
-    public function getFlagNames($mask = null, $asArray = false)
+    public function getFlagNames(int $mask = null, bool $asArray = false): string|array
     {
-        $mask  = isset($mask) ? $mask : $this->mask;
+        $mask = $mask ?? $this->mask;
         $names = [];
 
         foreach (static::getAllFlags() as $flag => $desc) {
@@ -93,11 +93,11 @@ trait BinaryFlags
     }
 
     /**
-     * Set an function which will be called upon changes
+     * Set a function which will be called upon changes
      *
-     * @param callable $onModify
+     * @param Closure|null $onModify
      */
-    public function setOnModifyCallback(callable $onModify)
+    public function setOnModifyCallback(?Closure $onModify): void
     {
         $this->onModifyCallback = $onModify;
     }
@@ -105,7 +105,7 @@ trait BinaryFlags
     /**
      * Will be called upon changes and execute the callback, if set
      */
-    protected function onModify()
+    protected function onModify(): void
     {
         if (is_callable($this->onModifyCallback)) {
             call_user_func($this->onModifyCallback, $this);
@@ -115,13 +115,13 @@ trait BinaryFlags
     /**
      * This method will set the mask where will be checked against
      *
-     * @param int $mask
+     * @param int|float $mask
      *
-     * @return BinaryFlags
+     * @return $this
      */
-    public function setMask($mask)
+    public function setMask(int|float $mask): static
     {
-        $before     = $this->mask;
+        $before = $this->mask;
         $this->mask = $mask;
 
         if ($before !== $this->mask) {
@@ -133,10 +133,8 @@ trait BinaryFlags
 
     /**
      * This method will return the current mask
-     *
-     * @return int
      */
-    public function getMask()
+    public function getMask(): int|float
     {
         return $this->mask;
     }
@@ -144,13 +142,13 @@ trait BinaryFlags
     /**
      * This will set flag(s) in the current mask
      *
-     * @param int $flag
+     * @param int|float $flag
      *
-     * @return BinaryFlags
+     * @return $this
      */
-    public function addFlag($flag)
+    public function addFlag(int|float $flag): static
     {
-        $before     = $this->mask;
+        $before = $this->mask;
         $this->mask |= $flag;
 
         if ($before !== $this->mask) {
@@ -163,13 +161,13 @@ trait BinaryFlags
     /**
      * This will remove a flag(s) (if it's set) in the current mask
      *
-     * @param int $flag
+     * @param int|float $flag
      *
-     * @return BinaryFlags
+     * @return $this
      */
-    public function removeFlag($flag)
+    public function removeFlag(int|float $flag): static
     {
-        $before     = $this->mask;
+        $before = $this->mask;
         $this->mask &= ~$flag;
 
         if ($before !== $this->mask) {
@@ -184,12 +182,12 @@ trait BinaryFlags
      * By default it will check all bits in the given flag
      * When you want to match any of the given flags set $checkAll to false
      *
-     * @param int  $flag
-     * @param bool $checkAll
+     * @param int|float $flag
+     * @param bool      $checkAll
      *
      * @return bool
      */
-    public function checkFlag($flag, $checkAll = true)
+    public function checkFlag(int|float $flag, bool $checkAll = true): bool
     {
         $result = $this->mask & $flag;
 
@@ -199,11 +197,11 @@ trait BinaryFlags
     /**
      * Check if any given flag(s) are set in the current mask
      *
-     * @param int $mask
+     * @param int|float $mask
      *
      * @return bool
      */
-    public function checkAnyFlag($mask)
+    public function checkAnyFlag(int|float $mask): bool
     {
         return $this->checkFlag($mask, false);
     }

@@ -1,0 +1,7 @@
+parameters:
+    level: max
+    checkGenericClassInNonGenericObjectType: false
+    paths:
+        - src
+    ignoreErrors:
+        - message: '#Dead catch - ReflectionException is never thrown in the try block#'
