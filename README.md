@@ -1,3 +1,5 @@
+[![test](https://github.com/reinder83/binary-flags/actions/workflows/test.yml/badge.svg)](https://github.com/reinder83/binary-flags/actions/workflows/test.yml)
+
 # BinaryFlags
 With this class you can easily add flags to your projects.
   
