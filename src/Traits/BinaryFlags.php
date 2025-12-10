@@ -78,7 +78,7 @@ trait BinaryFlags
      * @param bool     $asArray
      * @return string|array<int, string>
      */
-    public function getFlagNames(int $mask = null, bool $asArray = false): string|array
+    public function getFlagNames(?int $mask = null, bool $asArray = false): string|array
     {
         $mask = $mask ?? $this->mask;
         $names = [];
