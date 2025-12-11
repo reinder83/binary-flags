@@ -48,7 +48,7 @@ trait BinaryFlags
         if ($constants) {
             foreach ($constants as $constant => $flag) {
                 if (is_numeric($flag)) {
-                    $flags[$flag] = implode('', array_map('ucfirst', explode('_', strtolower($constant))));
+                    $flags[(int) $flag] = implode('', array_map('ucfirst', explode('_', strtolower($constant))));
                 }
             }
         }
@@ -78,7 +78,7 @@ trait BinaryFlags
      * @param bool     $asArray
      * @return string|array<int, string>
      */
-    public function getFlagNames(int $mask = null, bool $asArray = false): string|array
+    public function getFlagNames(?int $mask = null, bool $asArray = false): string|array
     {
         $mask = $mask ?? $this->mask;
         $names = [];
