@@ -48,7 +48,7 @@ trait BinaryFlags
         if ($constants) {
             foreach ($constants as $constant => $flag) {
                 if (is_numeric($flag)) {
-                    $flags[$flag] = implode('', array_map('ucfirst', explode('_', strtolower($constant))));
+                    $flags[(int) $flag] = implode('', array_map('ucfirst', explode('_', strtolower($constant))));
                 }
             }
         }
