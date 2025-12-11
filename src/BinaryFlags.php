@@ -11,6 +11,8 @@ use JsonSerializable;
  * This class holds useful methods for checking, adding or removing binary flags
  *
  * @author Reinder
+ *
+ * @implements Iterator<int|float, string>
  */
 abstract class BinaryFlags implements Iterator, Countable, JsonSerializable
 {

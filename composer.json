@@ -28,11 +28,11 @@
   },
   "config": {
     "platform": {
-      "php": "8.0"
+      "php": "8.1"
     }
   },
   "require": {
-    "php": "^8.0",
+    "php": "^8.1",
     "ext-json": "*"
   },
   "require-dev": {
