@@ -1,173 +1,92 @@
 <?php
 
-namespace Reinder83\BinaryFlags\Tests;
-
-use PHPUnit\Framework\TestCase;
 use Reinder83\BinaryFlags\Tests\Stubs\ExampleFlags;
 use Reinder83\BinaryFlags\Tests\Stubs\ExampleFlagsWithNames;
 
-class BinaryFlagsTest extends TestCase
-{
-    /**
-     * @var ExampleFlags
-     */
-    protected $test;
+beforeEach(function (): void {
+    $this->mask = ExampleFlags::FOO | ExampleFlags::BAR;
+    $this->callback = function (ExampleFlags $flags): void {
+        $this->mask = $flags->getMask();
+    };
+    $this->test = new ExampleFlags($this->mask, $this->callback);
+});
 
-    /**
-     * @var callable
-     */
-    protected $callback;
+test('base mask', function (): void {
+    expect($this->test->checkFlag(ExampleFlags::FOO))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::BAR))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::BAZ))->toBeFalse();
+    expect($this->test->checkFlag(ExampleFlags::QUX))->toBeFalse();
+    expect($this->test->getMask())->toEqual(0x3);
+});
 
-    /**
-     * @var int
-     */
-    protected $mask = 0x0;
+test('multiple flags', function (): void {
+    expect($this->test->checkFlag(ExampleFlags::FOO | ExampleFlags::BAR))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ))->toBeFalse();
+    expect($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ, false))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::BAZ | ExampleFlags::QUX, false))->toBeFalse();
+    expect($this->test->checkAnyFlag(ExampleFlags::BAR | ExampleFlags::BAZ))->toBeTrue();
+    expect($this->test->checkAnyFlag(ExampleFlags::BAZ | ExampleFlags::QUX))->toBeFalse();
+});
 
-    /**
-     * public method to set the mask
-     *
-     * @param $mask
-     */
-    public function setMask($mask)
-    {
-        $this->mask = $mask;
+test('callback', function (): void {
+    $this->test->addFlag(ExampleFlags::BAZ);
+    expect($this->mask)->toEqual(0x7);
+});
+
+test('add flag', function (): void {
+    $this->test->addFlag(ExampleFlags::BAZ);
+    $this->test->addFlag(ExampleFlags::FOO);
+
+    expect($this->test->checkFlag(ExampleFlags::FOO))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::BAR))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::BAZ))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::QUX))->toBeFalse();
+});
+
+test('remove flag', function (): void {
+    $this->test->removeFlag(ExampleFlags::BAR);
+    $this->test->removeFlag(ExampleFlags::BAZ);
+
+    expect($this->test->checkFlag(ExampleFlags::FOO))->toBeTrue();
+    expect($this->test->checkFlag(ExampleFlags::BAR))->toBeFalse();
+    expect($this->test->checkFlag(ExampleFlags::BAZ))->toBeFalse();
+    expect($this->test->checkFlag(ExampleFlags::QUX))->toBeFalse();
+});
+
+test('flag names', function (): void {
+    expect($this->test->getFlagNames())->toEqual('Foo, Bar');
+    expect($this->test->getFlagNames(ExampleFlags::BAZ))->toEqual('Baz');
+    expect($this->test->getFlagNames(null, true))->toEqual([
+        ExampleFlags::FOO => 'Foo',
+        ExampleFlags::BAR => 'Bar',
+    ]);
+});
+
+test('named flag names', function (): void {
+    $named = new ExampleFlagsWithNames($this->test->getMask());
+    expect($named->getFlagNames())->toEqual('My foo description, My bar description');
+});
+
+test('get all flags mask', function (): void {
+    expect(ExampleFlags::getAllFlagsMask())->toEqual(1 + 2 + 4 + 8);
+});
+
+test('countable', function (): void {
+    expect($this->test->count())->toEqual(2);
+});
+
+test('iterable', function (): void {
+    $test = new ExampleFlagsWithNames(ExampleFlagsWithNames::FOO | ExampleFlagsWithNames::BAZ);
+    $expectedFlags = $test->getFlagNames(ExampleFlagsWithNames::FOO | ExampleFlagsWithNames::BAZ, true);
+
+    $result = [];
+    foreach ($test as $flag => $description) {
+        $result[$flag] = $description;
     }
 
-    // set up test case
-    protected function setUp(): void
-    {
-        // base mask
-        $this->mask = ExampleFlags::FOO | ExampleFlags::BAR;
+    expect($result)->toEqual($expectedFlags);
+});
 
-        // callback function
-        $model          = $this;
-        $this->callback = function (ExampleFlags $flags) use ($model) {
-            $model->setMask($flags->getMask());
-        };
-
-        // create new class with FOO and BAR set
-        $this->test = new ExampleFlags($this->mask, $this->callback);
-    }
-
-    // test base mask set in setUp
-    public function testBaseMask()
-    {
-        // verify if the correct flags are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO));
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
-
-        // flag 1 and 2 should be resulting in 3
-        $this->assertEquals(0x3, $this->test->getMask());
-    }
-
-    // test check flags with multiple flags
-    public function testMultipleFlags()
-    {
-        // test if all are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO | ExampleFlags::BAR));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ));
-
-        // test if any are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR | ExampleFlags::BAZ, false));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ | ExampleFlags::QUX, false));
-
-        // test if any are set
-        $this->assertTrue($this->test->checkAnyFlag(ExampleFlags::BAR | ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkAnyFlag(ExampleFlags::BAZ | ExampleFlags::QUX));
-    }
-
-    // test the callback method
-    public function testCallback()
-    {
-        // add BAZ which result in mask = 7
-        $this->test->addFlag(ExampleFlags::BAZ);
-
-        // the callback method should set the mask in this class to 7
-        $this->assertEquals(0x7, $this->mask);
-    }
-
-    // test adding a flag
-    public function testAddFlag()
-    {
-        // add a flag
-        $this->test->addFlag(ExampleFlags::BAZ);
-
-        // add an existing flag
-        $this->test->addFlag(ExampleFlags::FOO);
-
-        // verify if the correct flags are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO));
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAR));
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
-    }
-
-    // test removing a flag
-    public function testRemoveFlag()
-    {
-        // remove a flag
-        $this->test->removeFlag(ExampleFlags::BAR);
-
-        // remove an non-existing flag
-        $this->test->removeFlag(ExampleFlags::BAZ);
-
-        // verify if the correct flags are set
-        $this->assertTrue($this->test->checkFlag(ExampleFlags::FOO));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAR));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::BAZ));
-        $this->assertFalse($this->test->checkFlag(ExampleFlags::QUX));
-    }
-
-    public function testFlagNames()
-    {
-        $this->assertEquals('Foo, Bar', $this->test->getFlagNames());
-
-        $this->assertEquals('Baz', $this->test->getFlagNames(ExampleFlags::BAZ));
-
-        $this->assertEquals([
-            ExampleFlags::FOO => 'Foo',
-            ExampleFlags::BAR => 'Bar',
-        ], $this->test->getFlagNames(null, true));
-    }
-
-    public function testNamedFlagNames()
-    {
-        // same mask as exampleFlags
-        $named = new ExampleFlagsWithNames($this->test->getMask());
-
-        $this->assertEquals('My foo description, My bar description', $named->getFlagNames());
-    }
-
-    public function testGetAllFlagsMask()
-    {
-        $this->assertEquals(1 + 2 + 4 + 8, ExampleFlags::getAllFlagsMask());
-    }
-
-    public function testCountable()
-    {
-        $this->assertEquals(2, $this->test->count());
-    }
-
-    public function testIterable()
-    {
-        $test          = new ExampleFlagsWithNames(ExampleFlagsWithNames::FOO | ExampleFlagsWithNames::BAZ);
-        $expectedFlags = $test->getFlagNames(ExampleFlagsWithNames::FOO | ExampleFlagsWithNames::BAZ, true);
-
-        $result = [];
-        foreach ($test as $flag => $description) {
-            $result[$flag] = $description;
-        }
-
-        $this->assertEquals($expectedFlags, $result);
-    }
-
-    public function testJsonSerializable()
-    {
-        $this->assertEquals(
-            sprintf('{"mask":%d}', $this->test->getMask()),
-            json_encode($this->test)
-        );
-    }
-}
+test('json serializable', function (): void {
+    expect(json_encode($this->test))->toEqual(sprintf('{"mask":%d}', $this->test->getMask()));
+});
