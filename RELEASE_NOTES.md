@@ -1,6 +1,12 @@
 # Release Notes - v2.1.0
 
 ## Added
+- New enum-backed API:
+  - `BinaryEnumFlags`
+  - `Traits\InteractsWithEnumFlags`
+  - `Flag` enum and `Mask` value object
+- Enum-backed flags now return a `Mask` object from `getMask()`.
+- New `getMaskValue(): int` method for enum-backed flags to persist/interoperate with integer masks.
 - Deprecation warnings for passing `float` values as masks/flags.
 - README migration notice for the upcoming `v3.0.0` integer-only API.
 - `UPGRADE-v3.md` with migration instructions.
@@ -22,4 +28,38 @@ Cast external/legacy mask and flag values to `int` before calling BinaryFlags me
 ```php
 $flags->setMask((int) $mask);
 $flags->addFlag((int) $flag);
+```
+
+## Enum Migration Example
+```php
+// Before: numeric PermissionFlags
+class PermissionFlags extends BinaryFlags
+{
+    public const CAN_VIEW = Bits::BIT_1;
+    public const CAN_BOOK = Bits::BIT_2;
+}
+
+$flags = new PermissionFlags($storedMask);
+$flags->addFlag(PermissionFlags::CAN_VIEW | PermissionFlags::CAN_BOOK);
+$storedMask = $flags->getMask();
+
+// After: enum-backed PermissionFlags
+enum Permission: int
+{
+    case CanView = Bits::BIT_1;
+    case CanBook = Bits::BIT_2;
+}
+
+class PermissionFlags extends BinaryEnumFlags
+{
+    protected static function getFlagEnumClass(): string
+    {
+        return Permission::class;
+    }
+}
+
+$flags = new PermissionFlags(Mask::fromInt($storedMask, Permission::class));
+$flags->addFlag(Permission::CanView);
+$flags->addFlag(Permission::CanBook);
+$storedMask = $flags->getMaskValue();
 ```

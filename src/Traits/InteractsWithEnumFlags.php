@@ -78,6 +78,15 @@ trait InteractsWithEnumFlags
             if (!is_int($case->value)) {
                 throw new InvalidArgumentException('Only int-backed enums are supported.');
             }
+            if ($case->value <= 0 || ($case->value & ($case->value - 1)) !== 0) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Enum case %s::%s must be a single positive bit (power-of-two).',
+                        $enumClass,
+                        $case->name,
+                    ),
+                );
+            }
             $flags[(int) $case->value] = preg_replace('/(?<!^)[A-Z]/', ' $0', $case->name) ?? $case->name;
         }
 

@@ -1,6 +1,7 @@
 <?php
 
 use Reinder83\BinaryFlags\Flag;
+use Reinder83\BinaryFlags\Tests\Stubs\ExampleInvalidPermissionFlags;
 use Reinder83\BinaryFlags\Tests\Stubs\ExamplePermissionFlags;
 use Reinder83\BinaryFlags\Tests\Stubs\Permission;
 
@@ -20,4 +21,9 @@ test('enum flags reject masks from a different enum type', function (): void {
 
     expect(fn() => $flags->checkAnyFlag($wrongMask))
         ->toThrow(InvalidArgumentException::class);
+});
+
+test('enum flags require single-bit positive enum values', function (): void {
+    expect(fn() => ExampleInvalidPermissionFlags::getAllFlags())
+        ->toThrow(InvalidArgumentException::class, 'must be a single positive bit');
 });
