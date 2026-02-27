@@ -8,12 +8,38 @@ To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGI
 
 This package also comes with a trait which you can use to implement binary flags directly in your own class.
 
+### Trait naming
+For new code, prefer `Reinder83\BinaryFlags\Traits\InteractsWithNumericFlags`.
+`Reinder83\BinaryFlags\Traits\BinaryFlags` remains available for backward compatibility.
+For enum-based usage, use `Reinder83\BinaryFlags\BinaryEnumFlags` (which uses `Traits\InteractsWithEnumFlags`).
+
 
 ## Installing
 To install this package simply run the following command in the root of your project.
 ```
 composer require reinder83/binary-flags
 ```
+
+## Deprecation Notice (Upcoming v3.0.0 Breaking Change)
+Starting in `v2.1.0`, passing `float` values as masks or flags is deprecated.
+
+- Current `v2.x` behavior: floats are still accepted for backward compatibility, but trigger a deprecation warning.
+- `v3.0.0` behavior: masks and flags will be `int`-only.
+- `v3.0.0` behavior: `Bits::BIT_64` will be removed.
+
+### BIT_64 Notice
+`Bits::BIT_64` is being removed because PHP numbers for bitwise flags are signed. The 64th bit is the sign bit, so it cannot be used reliably as a normal flag.
+
+Using integer-compatible bits (`BIT_1` through `BIT_63`) prevents these issues and is the supported path for `v3.0.0`.
+
+To prepare for `v3.0.0`, cast incoming values before using the API:
+
+```php
+$flags->setMask((int) $maskFromLegacySource);
+$flags->addFlag((int) $incomingFlag);
+```
+
+See [UPGRADE-v3.md](UPGRADE-v3.md) for migration details.
 
 ## Methods
 The following methods can be used:
@@ -135,6 +161,37 @@ var_export($exampleFlags->checkFlag(ExampleFlags::FOO | ExampleFlags::BAZ, false
 var_export($exampleFlags->checkAnyFlag(ExampleFlags::FOO | ExampleFlags::BAZ)); 
 // true
 
+```
+
+##### Enum usage (optional)
+```php
+use Reinder83\BinaryFlags\BinaryEnumFlags;
+use Reinder83\BinaryFlags\Mask;
+
+enum Permission: int
+{
+    case CanView = Bits::BIT_1;
+    case CanBook = Bits::BIT_2;
+    case CanCancel = Bits::BIT_3;
+}
+
+class PermissionFlags extends BinaryEnumFlags
+{
+    protected static function getFlagEnumClass(): string
+    {
+        return Permission::class;
+    }
+}
+
+$flags = new PermissionFlags(Permission::CanView);
+$flags->addFlag(Permission::CanBook);
+$flags->addFlag(Mask::forEnum(Permission::class, Permission::CanCancel));
+
+var_export($flags->checkFlag(Permission::CanBook));
+// true
+
+var_export($flags->getFlagNames());
+// 'Can View, Can Book, Can Cancel'
 ```
 
 ##### Flag names example

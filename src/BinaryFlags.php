@@ -16,7 +16,7 @@ use JsonSerializable;
  */
 abstract class BinaryFlags implements Countable, Iterator, JsonSerializable
 {
-    use Traits\BinaryFlags;
+    use Traits\InteractsWithNumericFlags;
 
     private int $currentPos = 0;
 
