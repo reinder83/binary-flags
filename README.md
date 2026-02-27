@@ -3,8 +3,8 @@
 # BinaryFlags
 With this class you can easily add flags to your projects.
   
-The number of flags you can use is limited to the architecture of your system, e.g.: 32 flags on a 32-bit system or 64 flags on 64-bit system. 
-To store 64-bits flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalent in your datastore.
+The number of flags you can use is limited to the architecture of your system, e.g.: 32 flags on a 32-bit system or 64 flags on 64-bit system.
+To store 64-bit flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalent in your datastore.
 
 This package also comes with a trait which you can use to implement binary flags directly in your own class.
 
@@ -81,7 +81,7 @@ When you want to match any of the given flags set `$checkAll` to `false`.
 
 ##### checkAnyFlag(int $mask): bool
 _Since: v1.0.1_ \
-For you convenient I've added an alias to checkFlag with `$checkAll` set to `false`.
+For your convenience I've added an alias to checkFlag with `$checkAll` set to `false`.
 
 ##### count(): int
 _Since: v1.2.0_ \
@@ -111,7 +111,7 @@ You can treat a BinaryFlags object as an iterable, where each iteration will ret
 
 ## Example usage
 
-Below some example usage code
+Below is some example usage code
 
 ##### Create classes
 ```php
@@ -334,7 +334,7 @@ class Test extends Model
 $test = Test::find(1);
 
 // do binary operations on the flags class as described earlier
-$test->flags->checkFlag(ExampleFlag::FOO);
+$test->flags->checkFlag(ExampleFlags::FOO);
 ```
 
 
