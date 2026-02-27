@@ -99,10 +99,8 @@ trait InteractsWithEnumFlags
      * Check mask against constants
      * and return the names or descriptions in a comma-separated string or as array
      *
-     * @return string|array<int, string>
-     */
-    /**
      * @param int|TEnum|Mask<TEnum>|null $mask
+     * @param bool $asArray
      * @return string|array<int, string>
      */
     public function getFlagNames(int|BackedEnum|Mask|null $mask = null, bool $asArray = false): string|array

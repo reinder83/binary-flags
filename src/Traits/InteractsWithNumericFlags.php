@@ -76,7 +76,7 @@ trait InteractsWithNumericFlags
     {
         return array_reduce(
             array_keys(static::getAllFlags()),
-            function ($flag, $carry) {
+            function ($carry, $flag) {
                 return $carry | $flag;
             },
             0,
