@@ -73,6 +73,9 @@ enum Flag: int
     case Flag62 = Bits::BIT_62;
     case Flag63 = Bits::BIT_63;
 
+    /**
+     * @return Mask<self>
+     */
     public static function mask(self ...$flags): Mask
     {
         return Mask::fromFlags(...$flags);

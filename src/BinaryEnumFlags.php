@@ -11,14 +11,19 @@ use JsonSerializable;
 /**
  * Enum-aware variant of BinaryFlags.
  *
- * @implements Iterator<int, string>
+ * @template TEnum of BackedEnum
+ * @implements Iterator<int, TEnum>
  */
 abstract class BinaryEnumFlags implements Countable, Iterator, JsonSerializable
 {
+    /** @use Traits\InteractsWithEnumFlags<TEnum> */
     use Traits\InteractsWithEnumFlags;
 
     private int $currentPos = 0;
 
+    /**
+     * @param int|TEnum|Mask<TEnum> $mask
+     */
     public function __construct(int|BackedEnum|Mask $mask = 0, ?Closure $onModify = null)
     {
         $this->setMask($mask);
@@ -28,18 +33,29 @@ abstract class BinaryEnumFlags implements Countable, Iterator, JsonSerializable
         }
     }
 
-    public function current(): string
+    private function iterableMask(): int
     {
-        /** @var string $result Will always be string since the second argument is false */
-        $result = $this->getFlagNames($this->currentPos);
+        return $this->mask & static::getAllFlagsMask();
+    }
 
-        return $result;
+    /**
+     * @return TEnum
+     */
+    public function current(): BackedEnum
+    {
+        $enumClass = static::getFlagEnumClass();
+
+        /** @var TEnum $enum */
+        $enum = $enumClass::from($this->currentPos);
+
+        return $enum;
     }
 
     public function next(): void
     {
+        $iterableMask = $this->iterableMask();
         $this->currentPos <<= 1;
-        while (($this->mask & $this->currentPos) === 0 && $this->currentPos > 0) {
+        while (($iterableMask & $this->currentPos) === 0 && $this->currentPos > 0) {
             $this->currentPos <<= 1;
         }
     }
@@ -51,19 +67,20 @@ abstract class BinaryEnumFlags implements Countable, Iterator, JsonSerializable
 
     public function valid(): bool
     {
-        return $this->currentPos > 0;
+        return $this->currentPos > 0 && ($this->iterableMask() & $this->currentPos) !== 0;
     }
 
     public function rewind(): void
     {
-        if ($this->mask === 0) {
+        $iterableMask = $this->iterableMask();
+        if ($iterableMask === 0) {
             $this->currentPos = 0;
 
             return;
         }
 
         $this->currentPos = 1;
-        while (($this->mask & $this->currentPos) === 0) {
+        while (($iterableMask & $this->currentPos) === 0) {
             $this->currentPos <<= 1;
         }
     }

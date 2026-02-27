@@ -12,19 +12,20 @@ use Traversable;
 /**
  * Immutable enum-mask value object.
  *
- * @implements IteratorAggregate<int, BackedEnum>
+ * @template TEnum of BackedEnum
+ * @implements IteratorAggregate<int, TEnum>
  */
 final class Mask implements Countable, IteratorAggregate, JsonSerializable
 {
-    /** @var class-string<BackedEnum> */
+    /** @var class-string<TEnum> */
     private string $enumClass;
 
-    /** @var array<int, BackedEnum> */
+    /** @var array<int, TEnum> */
     private array $flags;
 
     /**
-     * @param class-string<BackedEnum> $enumClass
-     * @param array<int|string, BackedEnum> $flags
+     * @param class-string<TEnum> $enumClass
+     * @param array<int|string, TEnum> $flags
      */
     private function __construct(string $enumClass, array $flags)
     {
@@ -47,20 +48,28 @@ final class Mask implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @param class-string<BackedEnum> $enumClass
+     * @template TFlag of BackedEnum
+     * @param class-string<TFlag> $enumClass
+     * @param TFlag ...$flags
+     * @return self<TFlag>
      */
     public static function forEnum(string $enumClass, BackedEnum ...$flags): self
     {
         return new self($enumClass, $flags);
     }
 
+    /**
+     * @return self<Flag>
+     */
     public static function fromFlags(Flag ...$flags): self
     {
         return new self(Flag::class, $flags);
     }
 
     /**
-     * @param class-string<BackedEnum> $enumClass
+     * @template TFlag of BackedEnum
+     * @param class-string<TFlag> $enumClass
+     * @return self<TFlag>
      */
     public static function fromInt(int $mask, string $enumClass = Flag::class): self
     {
@@ -68,8 +77,9 @@ final class Mask implements Countable, IteratorAggregate, JsonSerializable
             throw new InvalidArgumentException(sprintf('Enum class %s does not exist.', $enumClass));
         }
 
-        /** @var array<int, BackedEnum> $cases */
+        /** @var array<int, TFlag> $cases */
         $cases = $enumClass::cases();
+        /** @var array<int, TFlag> $flags */
         $flags = [];
         foreach ($cases as $flag) {
             if (!is_int($flag->value)) {
@@ -85,7 +95,7 @@ final class Mask implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @return class-string<BackedEnum>
+     * @return class-string<TEnum>
      */
     public function enumClass(): string
     {
@@ -93,7 +103,7 @@ final class Mask implements Countable, IteratorAggregate, JsonSerializable
     }
 
     /**
-     * @return array<int, BackedEnum>
+     * @return array<int, TEnum>
      */
     public function flags(): array
     {
@@ -109,6 +119,9 @@ final class Mask implements Countable, IteratorAggregate, JsonSerializable
         );
     }
 
+    /**
+     * @param TEnum $flag
+     */
     public function has(BackedEnum $flag): bool
     {
         if (!$flag instanceof $this->enumClass) {
@@ -118,11 +131,19 @@ final class Mask implements Countable, IteratorAggregate, JsonSerializable
         return in_array($flag, $this->flags, true);
     }
 
+    /**
+     * @param TEnum ...$flags
+     * @return self<TEnum>
+     */
     public function add(BackedEnum ...$flags): self
     {
         return new self($this->enumClass, [...$this->flags, ...$flags]);
     }
 
+    /**
+     * @param TEnum ...$flags
+     * @return self<TEnum>
+     */
     public function remove(BackedEnum ...$flags): self
     {
         $removeMap = [];
@@ -149,6 +170,9 @@ final class Mask implements Countable, IteratorAggregate, JsonSerializable
         return count($this->flags);
     }
 
+    /**
+     * @return Traversable<int, TEnum>
+     */
     public function getIterator(): Traversable
     {
         yield from $this->flags;

@@ -4,13 +4,13 @@ namespace Reinder83\BinaryFlags\Traits;
 
 use BackedEnum;
 use Closure;
-use InvalidArgumentException;
-use Reinder83\BinaryFlags\Flag;
 use Reinder83\BinaryFlags\Mask;
-use UnitEnum;
+use InvalidArgumentException;
 
 /**
  * Enum-focused mask/flag behavior.
+ *
+ * @template TEnum of BackedEnum
  */
 trait InteractsWithEnumFlags
 {
@@ -25,36 +25,13 @@ trait InteractsWithEnumFlags
     protected ?Closure $onModifyCallback = null;
 
     /**
-     * @return class-string<BackedEnum>
+     * @return class-string<TEnum>
      */
-    protected static function getFlagEnumClass(): string
-    {
-        return Flag::class;
-    }
+    abstract protected static function getFlagEnumClass(): string;
 
     /**
-     * @param array<int, UnitEnum> $cases
-     * @return array<int, BackedEnum>
+     * @param int|TEnum|Mask<TEnum> $value
      */
-    private static function normalizeEnumCases(array $cases): array
-    {
-        $normalizedCases = [];
-
-        foreach ($cases as $case) {
-            if (!$case instanceof BackedEnum) {
-                continue;
-            }
-
-            if (!is_int($case->value)) {
-                continue;
-            }
-
-            $normalizedCases[] = $case;
-        }
-
-        return $normalizedCases;
-    }
-
     private function normalizeEnumMaskOrFlag(int|BackedEnum|Mask $value): int
     {
         if ($value instanceof BackedEnum) {
@@ -93,11 +70,14 @@ trait InteractsWithEnumFlags
             return [];
         }
 
-        /** @var array<int, BackedEnum> $cases */
-        $cases = self::normalizeEnumCases($enumClass::cases());
+        /** @var array<int, TEnum> $cases */
+        $cases = $enumClass::cases();
 
         $flags = [];
         foreach ($cases as $case) {
+            if (!is_int($case->value)) {
+                throw new InvalidArgumentException('Only int-backed enums are supported.');
+            }
             $flags[(int) $case->value] = preg_replace('/(?<!^)[A-Z]/', ' $0', $case->name) ?? $case->name;
         }
 
@@ -119,6 +99,10 @@ trait InteractsWithEnumFlags
      * Check mask against constants
      * and return the names or descriptions in a comma-separated string or as array
      *
+     * @return string|array<int, string>
+     */
+    /**
+     * @param int|TEnum|Mask<TEnum>|null $mask
      * @return string|array<int, string>
      */
     public function getFlagNames(int|BackedEnum|Mask|null $mask = null, bool $asArray = false): string|array
@@ -147,6 +131,9 @@ trait InteractsWithEnumFlags
         }
     }
 
+    /**
+     * @param int|TEnum|Mask<TEnum> $mask
+     */
     public function setMask(int|BackedEnum|Mask $mask): static
     {
         $before = $this->mask;
@@ -159,6 +146,9 @@ trait InteractsWithEnumFlags
         return $this;
     }
 
+    /**
+     * @return Mask<TEnum>
+     */
     public function getMask(): Mask
     {
         return Mask::fromInt($this->mask, static::getFlagEnumClass());
@@ -169,6 +159,9 @@ trait InteractsWithEnumFlags
         return $this->mask;
     }
 
+    /**
+     * @param int|TEnum|Mask<TEnum> $flag
+     */
     public function addFlag(int|BackedEnum|Mask $flag): static
     {
         $before = $this->mask;
@@ -181,6 +174,9 @@ trait InteractsWithEnumFlags
         return $this;
     }
 
+    /**
+     * @param int|TEnum|Mask<TEnum> $flag
+     */
     public function removeFlag(int|BackedEnum|Mask $flag): static
     {
         $before = $this->mask;
@@ -194,6 +190,9 @@ trait InteractsWithEnumFlags
         return $this;
     }
 
+    /**
+     * @param int|TEnum|Mask<TEnum> $flag
+     */
     public function checkFlag(int|BackedEnum|Mask $flag, bool $checkAll = true): bool
     {
         $normalizedFlag = $this->normalizeEnumMaskOrFlag($flag);
@@ -202,6 +201,9 @@ trait InteractsWithEnumFlags
         return $checkAll ? $result === $normalizedFlag : $result > 0;
     }
 
+    /**
+     * @param int|TEnum|Mask<TEnum> $mask
+     */
     public function checkAnyFlag(int|BackedEnum|Mask $mask): bool
     {
         return $this->checkFlag($mask, false);
