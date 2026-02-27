@@ -159,7 +159,12 @@ trait InteractsWithEnumFlags
         return $this;
     }
 
-    public function getMask(): int
+    public function getMask(): Mask
+    {
+        return Mask::fromInt($this->mask, static::getFlagEnumClass());
+    }
+
+    public function getMaskValue(): int
     {
         return $this->mask;
     }

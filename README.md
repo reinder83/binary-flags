@@ -51,6 +51,14 @@ This can be passed as first argument in the constructor.
 ##### getMask(): int
 Retrieve the current mask.
 
+When using `BinaryEnumFlags`, `getMask()` returns a `Mask` object instead.
+Use `getMaskValue(): int` on enum-based flags if you need the numeric mask.
+
+##### getMaskValue(): int
+_Since: v2.1.0_ \
+Returns the numeric mask value for storage/interoperability.
+This method is only available on enum-backed flags (`BinaryEnumFlags`).
+
 ##### setOnModifyCallback(callable $onModify)
 Set a callback function which is called when the mask changes. 
 This can be passed as second argument in the constructor.
@@ -192,6 +200,47 @@ var_export($flags->checkFlag(Permission::CanBook));
 
 var_export($flags->getFlagNames());
 // 'Can View, Can Book, Can Cancel'
+```
+
+##### Migrating from numeric flags to enum flags
+```php
+// Before (numeric PermissionFlags)
+use Reinder83\BinaryFlags\BinaryFlags;
+
+class PermissionFlags extends BinaryFlags
+{
+    public const CAN_VIEW = Bits::BIT_1;
+    public const CAN_BOOK = Bits::BIT_2;
+}
+
+$flags = new PermissionFlags($storedMask);
+$flags->addFlag(PermissionFlags::CAN_VIEW | PermissionFlags::CAN_BOOK);
+$storedMask = $flags->getMask(); // int
+
+// After (enum PermissionFlags)
+use Reinder83\BinaryFlags\BinaryEnumFlags;
+use Reinder83\BinaryFlags\Mask;
+
+enum Permission: int
+{
+    case CanView = Bits::BIT_1;
+    case CanBook = Bits::BIT_2;
+}
+
+class PermissionFlags extends BinaryEnumFlags
+{
+    protected static function getFlagEnumClass(): string
+    {
+        return Permission::class;
+    }
+}
+
+$flags = new PermissionFlags(Mask::fromInt($storedMask, Permission::class));
+$flags->addFlag(Permission::CanView);
+$flags->addFlag(Permission::CanBook);
+
+// Save as integer for storage/interop
+$storedMask = $flags->getMaskValue();
 ```
 
 ##### Flag names example

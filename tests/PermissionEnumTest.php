@@ -11,7 +11,8 @@ test('custom enum classes are supported in binary enum flags', function (): void
 
     expect($flags->checkFlag(Permission::CanBook))->toBeTrue()
         ->and($flags->checkAnyFlag(Mask::forEnum(Permission::class, Permission::CanView, Permission::CanRefund)))->toBeTrue()
-        ->and($flags->getMask())->toEqual(Permission::CanView->value | Permission::CanBook->value | Permission::CanCancel->value);
+        ->and($flags->getMask())->toBeInstanceOf(Mask::class)
+        ->and($flags->getMask()->toInt())->toEqual(Permission::CanView->value | Permission::CanBook->value | Permission::CanCancel->value);
 });
 
 test('enum flags do not trigger float deprecation warnings', function (): void {

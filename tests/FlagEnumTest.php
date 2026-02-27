@@ -13,7 +13,8 @@ test('enum flags are supported', function (): void {
     expect($flags->checkFlag(Flag::Flag2))->toBeTrue()
         ->and($flags->checkFlag(Flag::Flag1))->toBeFalse()
         ->and($flags->checkAnyFlag(Flag::mask(Flag::Flag1, Flag::Flag3)))->toBeTrue()
-        ->and($flags->getMask())->toEqual(Flag::mask(Flag::Flag2, Flag::Flag3, Flag::Flag4)->toInt())
+        ->and($flags->getMask())->toBeInstanceOf(Mask::class)
+        ->and($flags->getMask()->toInt())->toEqual(Flag::mask(Flag::Flag2, Flag::Flag3, Flag::Flag4)->toInt())
         ->and($flags->getFlagNames(Flag::Flag4))->toEqual('Flag4');
 });
 
@@ -37,5 +38,5 @@ test('enum flags accept mask value object', function (): void {
         ->and($flags->checkFlag(Mask::fromInt(Flag::Flag2->value | Flag::Flag3->value)))->toBeTrue()
         ->and($flags->checkFlag(Flag::Flag1))->toBeFalse()
         ->and($flags->checkFlag(Flag::Flag4))->toBeFalse()
-        ->and($flags->getMask())->toEqual(Flag::mask(Flag::Flag2, Flag::Flag3)->toInt());
+        ->and($flags->getMask()->toInt())->toEqual(Flag::mask(Flag::Flag2, Flag::Flag3)->toInt());
 });
