@@ -1,0 +1,10 @@
+{
+  "preset": "per",
+  "rules": {
+    "class_attributes_separation": {
+      "elements": {
+        "const": "none"
+      }
+    }
+  }
+}
