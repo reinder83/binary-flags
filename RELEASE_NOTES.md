@@ -10,7 +10,8 @@
 - Deprecation warnings for passing `float` values as masks/flags.
 - README migration notice for the upcoming `v3.0.0` integer-only API.
 - `UPGRADE-v3.md` with migration instructions.
-- New trait alias: `Traits\InteractsWithNumericFlags` (non-breaking alias for `Traits\BinaryFlags`).
+- New primary numeric trait: `Traits\InteractsWithNumericFlags`.
+- `Traits\BinaryFlags` is now deprecated and kept for backward compatibility.
 
 ## Deprecated
 - Passing `float` to BinaryFlags mask/flag methods is deprecated in `v2.1.0`.
