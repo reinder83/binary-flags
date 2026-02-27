@@ -41,3 +41,17 @@ test('enum flags do not trigger float deprecation warnings', function (): void {
 
     expect($messages)->toBeEmpty();
 });
+
+test('iterating enum flags yields enum cases', function (): void {
+    $flags = new ExamplePermissionFlags(Mask::forEnum(Permission::class, Permission::CanView, Permission::CanCancel));
+
+    $result = [];
+    foreach ($flags as $bit => $permission) {
+        $result[$bit] = $permission;
+    }
+
+    expect($result)->toEqual([
+        Permission::CanView->value => Permission::CanView,
+        Permission::CanCancel->value => Permission::CanCancel,
+    ]);
+});
