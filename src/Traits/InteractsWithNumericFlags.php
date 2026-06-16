@@ -79,7 +79,7 @@ trait InteractsWithNumericFlags
         $names = [];
 
         foreach (static::getAllFlags() as $flag => $desc) {
-            if (is_numeric($flag) && ($mask & $flag)) {
+            if ($mask & $flag) {
                 $names[$flag] = $desc;
             }
         }
