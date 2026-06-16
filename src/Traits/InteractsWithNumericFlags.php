@@ -24,32 +24,6 @@ trait InteractsWithNumericFlags
     protected ?Closure $onModifyCallback = null;
 
     /**
-     * Enforce the v3 numeric API at runtime, even when callers are not using strict scalar types.
-     */
-    private function requireIntMaskOrFlag(mixed $value, string $parameter, string $method): int
-    {
-        if (! is_int($value)) {
-            throw new \TypeError(sprintf(
-                '%s(): Argument #%s ($%s) must be of type int, %s given',
-                $method,
-                $this->getParameterPosition($parameter),
-                $parameter,
-                get_debug_type($value),
-            ));
-        }
-
-        return $value;
-    }
-
-    private function getParameterPosition(string $parameter): int
-    {
-        return match ($parameter) {
-            'mask', 'flag' => 1,
-            default => 1,
-        };
-    }
-
-    /**
      * Return an array with all flags as key with a name as description
      *
      * @return array<int, string>
@@ -98,9 +72,9 @@ trait InteractsWithNumericFlags
      *
      * @return string|array<int, string>
      */
-    public function getFlagNames(mixed $mask = null, bool $asArray = false): string|array
+    public function getFlagNames(?int $mask = null, bool $asArray = false): string|array
     {
-        $mask = $mask === null ? $this->mask : $this->requireIntMaskOrFlag($mask, 'mask', __METHOD__);
+        $mask ??= $this->mask;
 
         $names = [];
 
@@ -136,10 +110,10 @@ trait InteractsWithNumericFlags
      *
      * @return $this
      */
-    public function setMask(mixed $mask): static
+    public function setMask(int $mask): static
     {
         $before = $this->mask;
-        $this->mask = $this->requireIntMaskOrFlag($mask, 'mask', __METHOD__);
+        $this->mask = $mask;
 
         if ($before !== $this->mask) {
             $this->onModify();
@@ -161,10 +135,10 @@ trait InteractsWithNumericFlags
      *
      * @return $this
      */
-    public function addFlag(mixed $flag): static
+    public function addFlag(int $flag): static
     {
         $before = $this->mask;
-        $this->mask |= $this->requireIntMaskOrFlag($flag, 'flag', __METHOD__);
+        $this->mask |= $flag;
 
         if ($before !== $this->mask) {
             $this->onModify();
@@ -178,10 +152,10 @@ trait InteractsWithNumericFlags
      *
      * @return $this
      */
-    public function removeFlag(mixed $flag): static
+    public function removeFlag(int $flag): static
     {
         $before = $this->mask;
-        $this->mask &= ~$this->requireIntMaskOrFlag($flag, 'flag', __METHOD__);
+        $this->mask &= ~$flag;
 
         if ($before !== $this->mask) {
             $this->onModify();
@@ -195,9 +169,8 @@ trait InteractsWithNumericFlags
      * By default it will check all bits in the given flag
      * When you want to match any of the given flags set $checkAll to false
      */
-    public function checkFlag(mixed $flag, bool $checkAll = true): bool
+    public function checkFlag(int $flag, bool $checkAll = true): bool
     {
-        $flag = $this->requireIntMaskOrFlag($flag, 'flag', __METHOD__);
         $result = $this->mask & $flag;
 
         return $checkAll ? $result === $flag : $result > 0;
@@ -206,8 +179,8 @@ trait InteractsWithNumericFlags
     /**
      * Check if any given flag(s) are set in the current mask
      */
-    public function checkAnyFlag(mixed $mask): bool
+    public function checkAnyFlag(int $mask): bool
     {
-        return $this->checkFlag($this->requireIntMaskOrFlag($mask, 'mask', __METHOD__), false);
+        return $this->checkFlag($mask, false);
     }
 }
