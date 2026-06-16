@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reinder83\BinaryFlags;
 
 use Closure;
@@ -12,7 +14,7 @@ use JsonSerializable;
  *
  * @author Reinder
  *
- * @implements Iterator<int|float, string>
+ * @implements Iterator<int, string>
  */
 abstract class BinaryFlags implements Countable, Iterator, JsonSerializable
 {
@@ -23,7 +25,7 @@ abstract class BinaryFlags implements Countable, Iterator, JsonSerializable
     /**
      * Initiate class
      */
-    public function __construct(int|float $mask = 0, ?Closure $onModify = null)
+    public function __construct(int $mask = 0, ?Closure $onModify = null)
     {
         $this->setMask($mask);
 
@@ -64,11 +66,11 @@ abstract class BinaryFlags implements Countable, Iterator, JsonSerializable
     /**
      * Return the key of the current element
      *
-     * @return int|float the flag
+     * @return int the flag
      *
      * @since 1.2.0
      */
-    public function key(): int|float
+    public function key(): int
     {
         return $this->currentPos;
     }
@@ -132,7 +134,7 @@ abstract class BinaryFlags implements Countable, Iterator, JsonSerializable
     /**
      * Specify data which should be serialized to JSON
      *
-     * @return array{mask: int|float} data which can be serialized by <b>json_encode</b>,
+     * @return array{mask: int} data which can be serialized by <b>json_encode</b>,
      *
      * @since 1.2.0
      */

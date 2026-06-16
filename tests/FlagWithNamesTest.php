@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Reinder83\BinaryFlags\Mask;
 use Reinder83\BinaryFlags\Tests\Stubs\ExamplePermissionFlags;
 use Reinder83\BinaryFlags\Tests\Stubs\Permission;

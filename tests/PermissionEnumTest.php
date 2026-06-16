@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Reinder83\BinaryFlags\Mask;
 use Reinder83\BinaryFlags\Tests\Stubs\ExamplePermissionFlags;
 use Reinder83\BinaryFlags\Tests\Stubs\Permission;
@@ -15,7 +17,7 @@ test('custom enum classes are supported in binary enum flags', function (): void
         ->and($flags->getMask()->toInt())->toEqual(Permission::CanView->value | Permission::CanBook->value | Permission::CanCancel->value);
 });
 
-test('enum flags do not trigger float deprecation warnings', function (): void {
+test('enum flags are unaffected by numeric float validation', function (): void {
     $messages = [];
     set_error_handler(function (int $severity, string $message) use (&$messages): bool {
         if ($severity === E_USER_DEPRECATED) {

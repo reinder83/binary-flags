@@ -12,7 +12,7 @@
 
 ## How to Migrate
 1. Find every call that passes mask/flag values into BinaryFlags methods.
-2. Ensure values are cast to `int` before passing them.
+2. Ensure values are cast or validated as `int` before passing them.
 3. Ensure database or external sources provide integer-compatible values.
 
 ## Example
@@ -28,10 +28,10 @@ $flags->setMask((int) $legacyValue);
 $flags->addFlag((int) $legacyFlag);
 ```
 
-## v2.1+ Deprecation Signal
-Starting in `v2.1.0`, float inputs trigger deprecation warnings to help detect call sites before moving to `v3.0.0`.
+## Runtime Impact
+Code paths that still pass `float` values into numeric flag APIs now fail with `TypeError`.
 
 ## Why BIT_64 Is Being Removed
-`BIT_64` is being removed because PHP numbers for bitwise flags are signed. The 64th bit is the sign bit, so it cannot be used reliably as a normal flag.
+`BIT_64` was removed because PHP numbers for bitwise flags are signed. The 64th bit is the sign bit, so it cannot be used reliably as a normal flag.
 
 Staying with integer-compatible bits prevents those runtime issues.

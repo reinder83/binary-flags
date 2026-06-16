@@ -40,7 +40,7 @@
   },
   "require-dev": {
     "phpstan/phpstan": "^1.10",
-    "pestphp/pest": "^2.36",
+    "pestphp/pest": "^3.8",
     "laravel/pint": "^1",
     "rector/rector": "^1"
   },
