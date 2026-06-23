@@ -17,7 +17,7 @@ test('custom enum classes are supported in binary enum flags', function (): void
         ->and($flags->getMask()->toInt())->toEqual(Permission::CanView->value | Permission::CanBook->value | Permission::CanCancel->value);
 });
 
-test('enum flags are unaffected by numeric float validation', function (): void {
+test('enum flags do not emit deprecation warnings', function (): void {
     $messages = [];
     set_error_handler(function (int $severity, string $message) use (&$messages): bool {
         if ($severity === E_USER_DEPRECATED) {
