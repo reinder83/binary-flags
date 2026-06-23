@@ -23,7 +23,8 @@ composer require reinder83/binary-flags
 ## v3.0.0 Breaking Changes
 As of `v3.0.0`, masks and flags are `int`-only.
 
-- Passing `float` values to numeric mask/flag methods now throws a `TypeError`.
+- Passing `float` values to numeric mask/flag methods from `strict_types=1` call sites now throws a `TypeError`.
+- For non-strict callers, PHP scalar coercion can still convert `float` to `int` before the method is entered, so validate or cast external values before calling the API.
 - `Bits::BIT_64` has been removed.
 
 ### BIT_64 Notice

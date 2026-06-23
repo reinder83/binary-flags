@@ -29,7 +29,8 @@ $flags->addFlag((int) $legacyFlag);
 ```
 
 ## Runtime Impact
-Code paths that still pass `float` values into numeric flag APIs now fail with `TypeError`.
+Code paths that still pass `float` values into numeric flag APIs now fail with `TypeError` when called from `strict_types=1` code.
+For non-strict callers, PHP scalar coercion can still convert `float` to `int` at the call boundary, so external values should be validated or cast before calling the API.
 
 ## Why BIT_64 Is Being Removed
 `BIT_64` was removed because PHP numbers for bitwise flags are signed. The 64th bit is the sign bit, so it cannot be used reliably as a normal flag.

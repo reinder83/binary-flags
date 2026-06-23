@@ -2,7 +2,8 @@
 
 ## Changed
 - Numeric `BinaryFlags` APIs now accept `int` values only.
-- Passing `float` values to numeric mask/flag methods now raises `TypeError`.
+- Passing `float` values to numeric mask/flag methods now raises `TypeError` for `strict_types=1` callers.
+- Non-strict callers should still cast or validate external values before calling the API because PHP scalar coercion can convert `float` to `int` at the call boundary.
 - The numeric iterator and JSON serialization contracts are now documented as `int`-based.
 
 ## Removed
