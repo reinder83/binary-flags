@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Reinder83\BinaryFlags\Traits;
 
 use BackedEnum;

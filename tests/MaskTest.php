@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Reinder83\BinaryFlags\Flag;
 use Reinder83\BinaryFlags\Mask;
 use Reinder83\BinaryFlags\Tests\Stubs\BadStringFlag;

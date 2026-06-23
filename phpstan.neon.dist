@@ -4,3 +4,4 @@ parameters:
         - src
     ignoreErrors:
         - message: '#Dead catch - ReflectionException is never thrown in the try block#'
+        - message: '#Trait Reinder83\\BinaryFlags\\Traits\\BinaryFlags is used zero times and is not analysed#'

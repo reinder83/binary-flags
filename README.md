@@ -3,8 +3,8 @@
 # BinaryFlags
 With this class you can easily add flags to your projects.
   
-The number of flags you can use is limited to the architecture of your system, e.g.: 32 flags on a 32-bit system or 64 flags on 64-bit system.
-To store 64-bit flags in a database, you will need to store it as UNSIGNED BIGINT in MySQL or an equivalent in your datastore.
+The number of usable flags is limited by PHP's signed integer size: 31 flags on a 32-bit system or 63 flags on a 64-bit system.
+If you store 64-bit integer masks in a database, use a type that can hold signed 64-bit values, such as `BIGINT` in MySQL or the equivalent in your datastore.
 
 This package also comes with a trait which you can use to implement binary flags directly in your own class.
 
@@ -20,19 +20,19 @@ To install this package simply run the following command in the root of your pro
 composer require reinder83/binary-flags
 ```
 
-## Deprecation Notice (Upcoming v3.0.0 Breaking Change)
-Starting in `v2.1.0`, passing `float` values as masks or flags is deprecated.
+## v3.0.0 Breaking Changes
+As of `v3.0.0`, masks and flags are `int`-only.
 
-- Current `v2.x` behavior: floats are still accepted for backward compatibility, but trigger a deprecation warning.
-- `v3.0.0` behavior: masks and flags will be `int`-only.
-- `v3.0.0` behavior: `Bits::BIT_64` will be removed.
+- Passing `float` values to numeric mask/flag methods from `strict_types=1` call sites now throws a `TypeError`.
+- For non-strict callers, PHP scalar coercion can still convert `float` to `int` before the method is entered, so validate or cast external values before calling the API.
+- `Bits::BIT_64` has been removed.
 
 ### BIT_64 Notice
-`Bits::BIT_64` is being removed because PHP numbers for bitwise flags are signed. The 64th bit is the sign bit, so it cannot be used reliably as a normal flag.
+`Bits::BIT_64` was removed because PHP numbers for bitwise flags are signed. The 64th bit is the sign bit, so it cannot be used reliably as a normal flag.
 
-Using integer-compatible bits (`BIT_1` through `BIT_63`) prevents these issues and is the supported path for `v3.0.0`.
+Use `BIT_1` through `BIT_63` for portable numeric flags.
 
-To prepare for `v3.0.0`, cast incoming values before using the API:
+If you still receive mask values from loose legacy sources, cast them before using the API:
 
 ```php
 $flags->setMask((int) $maskFromLegacySource);

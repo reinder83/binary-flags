@@ -39,10 +39,10 @@
     "ext-json": "*"
   },
   "require-dev": {
-    "phpstan/phpstan": "^1.10",
-    "pestphp/pest": "^2.36",
+    "phpstan/phpstan": "^2.1",
+    "pestphp/pest": "^3.8",
     "laravel/pint": "^1",
-    "rector/rector": "^1"
+    "rector/rector": "^2.4"
   },
   "autoload-dev": {
     "psr-4": {
