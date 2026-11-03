@@ -1,5 +1,8 @@
 # Release Notes - v3.0.0
 
+## Added
+- `addOrRemoveFlag($flag, bool $add)` on numeric and enum flags, to add or remove flag(s) based on a boolean.
+
 ## Changed
 - Numeric `BinaryFlags` APIs now accept `int` values only.
 - Passing `float` values to numeric mask/flag methods now raises `TypeError` for `strict_types=1` callers.

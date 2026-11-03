@@ -56,6 +56,16 @@ test('remove flag', function (): void {
         ->and($this->test->checkFlag(ExampleFlags::QUX))->toBeFalse();
 });
 
+test('add or remove flag', function (): void {
+    $this->test->addOrRemoveFlag(ExampleFlags::BAZ, true);
+    $this->test->addOrRemoveFlag(ExampleFlags::BAR, false);
+
+    expect($this->test->checkFlag(ExampleFlags::FOO))->toBeTrue()
+        ->and($this->test->checkFlag(ExampleFlags::BAR))->toBeFalse()
+        ->and($this->test->checkFlag(ExampleFlags::BAZ))->toBeTrue()
+        ->and($this->mask)->toEqual(ExampleFlags::FOO | ExampleFlags::BAZ);
+});
+
 test('get all flags mask', function (): void {
     expect(ExampleFlags::getAllFlagsMask())->toEqual(1 + 2 + 4 + 8);
 });

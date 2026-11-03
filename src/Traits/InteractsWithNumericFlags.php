@@ -165,6 +165,16 @@ trait InteractsWithNumericFlags
     }
 
     /**
+     * This will add the flag(s) when $add is true, otherwise remove them
+     *
+     * @return $this
+     */
+    public function addOrRemoveFlag(int $flag, bool $add): static
+    {
+        return $add ? $this->addFlag($flag) : $this->removeFlag($flag);
+    }
+
+    /**
      * Check if given flag(s) are set in the current mask
      * By default it will check all bits in the given flag
      * When you want to match any of the given flags set $checkAll to false

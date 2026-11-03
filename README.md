@@ -74,6 +74,11 @@ Adds one or multiple flags to the current mask.
 ##### removeFlag(int $flag)
 Removes one or multiple flags from the current mask.
 
+##### addOrRemoveFlag(int $flag, bool $add)
+_Since: v3.0.0_ \
+Adds the flag(s) when `$add` is `true`, otherwise removes them. Handy for syncing a flag with a boolean:
+`$flags->addOrRemoveFlag(Permission::CanBook, $request->boolean('can_book'));`
+
 ##### checkFlag(int $flag, [bool $checkAll=true]): bool
 Check if given flag(s) are set in the current mask. 
 By default, it will check all bits in the given flag. 
