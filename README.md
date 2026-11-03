@@ -75,7 +75,7 @@ Adds one or multiple flags to the current mask.
 Removes one or multiple flags from the current mask.
 
 ##### addOrRemoveFlag(int $flag, bool $add)
-_Since: v3.0.0_ \
+_Since: v3.1.0_ \
 Adds the flag(s) when `$add` is `true`, otherwise removes them. Handy for syncing a flag with a boolean:
 `$flags->addOrRemoveFlag(Permission::CanBook, $request->boolean('can_book'));`
 
