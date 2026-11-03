@@ -21,6 +21,9 @@ test('float mask and flag values are rejected in v3', function (): void {
     expect(fn() => $this->test->removeFlag((float) ExampleFlags::FOO))
         ->toThrow(TypeError::class);
 
+    expect(fn() => $this->test->addOrRemoveFlag((float) ExampleFlags::BAR, true))
+        ->toThrow(TypeError::class);
+
     expect(fn() => $this->test->checkFlag((float) ExampleFlags::BAR))
         ->toThrow(TypeError::class);
 

@@ -202,6 +202,14 @@ trait InteractsWithEnumFlags
     /**
      * @param int|TEnum|Mask<TEnum> $flag
      */
+    public function addOrRemoveFlag(int|BackedEnum|Mask $flag, bool $add): static
+    {
+        return $add ? $this->addFlag($flag) : $this->removeFlag($flag);
+    }
+
+    /**
+     * @param int|TEnum|Mask<TEnum> $flag
+     */
     public function checkFlag(int|BackedEnum|Mask $flag, bool $checkAll = true): bool
     {
         $normalizedFlag = $this->normalizeEnumMaskOrFlag($flag);
