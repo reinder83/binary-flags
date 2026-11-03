@@ -42,3 +42,12 @@ test('enum flags accept mask value object', function (): void {
         ->and($flags->checkFlag(Flag::Flag4))->toBeFalse()
         ->and($flags->getMask()->toInt())->toEqual(Flag::mask(Flag::Flag2, Flag::Flag3)->toInt());
 });
+
+test('enum flags can be added or removed by condition', function (): void {
+    $flags = new ExampleEnumFlags(Flag::mask(Flag::Flag1, Flag::Flag2));
+    $flags->addOrRemoveFlag(Flag::Flag3, true);
+    $flags->addOrRemoveFlag(Flag::Flag1, false);
+    $flags->addOrRemoveFlag(Flag::mask(Flag::Flag2, Flag::Flag4), false);
+
+    expect($flags->getMask()->toInt())->toEqual(Flag::Flag3->value);
+});

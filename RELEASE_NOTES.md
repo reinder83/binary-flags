@@ -1,3 +1,8 @@
+# Release Notes - v3.1.0
+
+## Added
+- `addOrRemoveFlag($flag, bool $add)` on numeric and enum flags, to add or remove flag(s) based on a boolean.
+
 # Release Notes - v3.0.0
 
 ## Changed
